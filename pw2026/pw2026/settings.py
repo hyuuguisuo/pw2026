@@ -40,7 +40,7 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     #Ativar meus apps/modulos
-    "atacadãobarato.apps.AtacadãobaratoConfig", 
+    "locadora.apps.LocadoraConfig", 
 ]
 
 MIDDLEWARE = [
