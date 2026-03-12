@@ -1,0 +1,52 @@
+{% extends 'locadora/modelo.html' %}
+
+{% load static %}
+
+{% block conteudo %}
+<body>
+    <style>
+        .andando {
+            border: 2px solid black;
+            animation: move_up 10s linear infinite;
+        }
+        @keyframes move_up {
+            0% {
+                transform: translateY(100%);
+            }
+            50% {
+            50% {
+                transform: translateY(-100%);
+            }
+            100% {
+                transform: translateY(100%);
+            }
+        }
+    </style>
+    <div class="header">
+        ...Header
+    </div>
+    <div class="container">
+        <ul>
+            <il>
+                Página Inicial
+            </il>
+        </ul>
+         <ul>
+            <il>
+                <a href="{% url "sobre" %}">Sobre</a>
+            </il>
+        </ul>
+         <ul>
+            <il>
+                <a href="{% url "contato" %}">Contato</a>
+            </il>
+        </ul>
+        <div class="andando">
+            Aqui está andando
+        </div>
+    </div>
+    <div class="footer">
+        Rodapé
+    </div>
+</body>
+{% endblock %}
