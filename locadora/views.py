@@ -28,7 +28,7 @@ class Create_Fornecedor(CreateView):
     model = Fornecedor
     fields = ['nome', 'cnpj', 'contato', 'endereco', 'tipo_distribuicao']
     template_name = 'locadora/form.html'
-    success_url = reverse_lazy('página_inicial')
+    success_url = reverse_lazy('listar_fornecedor')
     extra_context = {
         "titulo" : "Cadastro de Fornecedor",
         "botao" : "Cadastrar"
@@ -37,9 +37,9 @@ class Create_Fornecedor(CreateView):
 
 class Update_Fornecedor(UpdateView):
     model = Fornecedor
-    fields = ['nome', 'email', 'cpf', 'telefone', 'codigo']
+    fields = ['nome', 'cnpj', 'contato', 'endereco', 'tipo_distribuicao']
     template_name = 'locadora/form.html'
-    success_url = reverse_lazy('página_inicial')
+    success_url = reverse_lazy('listar_fornecedor')
     extra_context = {
         "titulo" : "Edição de Fornecedor",
         "botao" : "Salvar"
@@ -49,7 +49,7 @@ class Update_Fornecedor(UpdateView):
 class Delete_Fornecedor(DeleteView):
     model = Fornecedor
     template_name = 'locadora/form.html'
-    success_url = reverse_lazy('página_inicial')
+    success_url = reverse_lazy('listar_fornecedor')
     extra_context = {
         "titulo": "Excluir Fornecedor",
         "botao": "OBLITERAR"
@@ -59,6 +59,10 @@ class Delete_Fornecedor(DeleteView):
 class List_Fornecedor(ListView):
     model = Fornecedor
     template_name = 'locadora/form.html'
+    extra_context = {
+        "titulo": "Listar Fornecedor",
+        "botao": "LISTAR"
+    }
     
     
 class Detail_Fornecedor(DetailView):
