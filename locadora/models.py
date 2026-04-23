@@ -41,3 +41,23 @@ class Categoria(models.Model):
 
     # def __str__(self):
     #     return f"{self.nome}"
+
+class Filme(models.Model):
+    titulo = models.CharField(max_length=50, verbose_name="Título", help_text="Digite o titulo do filme")
+    duração = models.CharField(max_length=10, verbose_name="Duração",help_text="Digite a duração do filme")
+    descricao = models.CharField(max_length=10, verbose_name="Descrição")
+    categoria=models.ForeignKey(Categoria, on_delete=models.PROTECT)
+    classificacao = models.CharField(max_length=2,  verbose_name="Classificação")
+    prazo_devolucao=models.IntegerField(max=4,verbose_name="Prazo de devolução", help_text="Prazo em dias")
+    ano_lancamento=models.IntegerField(max=4, verbose_name="Ano de lançamento")
+
+
+
+
+class Locacao(models.Model):
+    cliente=models.ForeignKey(Cliente, on_delete=models.PROTECT)
+    filme=models.ForeignKey(Filme, on_delete=models.PROTECT)
+    data_locacao=models.DateField(auto_now_add=True)
+    data_devolucao=models.DateField(auto_now_add=True)
+
+
