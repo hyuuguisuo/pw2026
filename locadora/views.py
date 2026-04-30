@@ -99,7 +99,7 @@ class Update_Cliente(UpdateView):
 class Delete_Cliente(DeleteView):
     model = Cliente
     template_name = 'locadora/form.html'
-    success_url = reverse_lazy('página_inicial')
+    success_url = reverse_lazy('listar_cliente')
     extra_context = {
         "titulo": "Excluir Cliente",
         "botao": "OBLITERAR"
@@ -109,6 +109,11 @@ class Delete_Cliente(DeleteView):
 class List_Cliente(ListView):
     model = Cliente
     template_name = 'locadora/form.html'
+    extra_context = {
+        "titulo": "Listar Cliente",
+        "botao": "LISTAR"
+        }
+
 
 
 class Detail_Cliente(DetailView):

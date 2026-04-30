@@ -16,89 +16,80 @@
                     <table class="table table-hover mb-0">
                         <thead class="table-light">
                             <tr>
-                                <th>ID</th>
-                                <th>Nome</th>
-                                <th>CNPJ</th>
-                                <th>CONTATO</th>
-                                <th>ENDEREÇO</th>
-                                <th>TIPO DE DISTRIBUIÇÃO</th>
-                                <th>Ações</th>
-                            </tr>
-                        </thead>
+                  <th>ID</th>
+                  <th>Nome</th>
+                  
+                  {% if "Cliente" in titulo %}
+                    <th>CPF</th>
+                    <th>E-mail</th>
+                    <th>Telefone</th>
+                  {% else %}
+                    <th>CNPJ</th>
+                    <th>Contato</th>
+                    <th>Distribuição</th>
+                  {% endif %}
+                  
+                  <th>Ações</th>
+                </tr>
                         <tbody>
                             {% for item in object_list %}
-                            <tr>
-                                <td class="align-middle">
-                                  {{ item.id }}
-                                </td>
-                                <td class="align-middle fw-bold">
-                                  {{ item.nome }}
-                                </td>
-                                <td class="align-middle">
-                                    <span class="badge bg-info text-dark">
-                                      {{ item.cnpj }}
-                                    </span>
-                                </td>
-                                <td class="align-middle">
-                                  {{ item.contato }}
-                                </td>
-                                <td class="align-middle">
-                                  {{ item.endereco }}
-                                </td>
-                                <td class="align-middle">
-                                  {{ item.tipo_distribuicao }}
-                                </td>
-                                <td class="align-middle">
-                                    <a href="{% url "editar_fornecedor" item.pk %}" class="btn btn-sm btn-outline-primary" title="Editar">
-                                        Editar
-                                    </a>
-                                    <a href="{% url "excluir_fornecedor" item.pk %}" class="btn btn-sm btn-outline-danger" title="Excluir">
-                                        Excluir
-                                    </a>
-                                </td>
-                            </tr>
-                            {% empty %}
-                            <tr>
-                                <td colspan="4" class="text-center py-4 text-muted">
-                                    Nenhum item encontrado no banco de dados.
-                                </td>
-                            </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
-                </div>
-            </div>
+                <tr>
+                  <td class="align-middle">{{ item.id }}</td>
+                  <td class="align-middle fw-bold">{{ item.nome }}</td>
+
+                  {% if "Cliente" in titulo %}
+                    <td class="align-middle">{{ item.cpf }}</td>
+                    <td class="align-middle">{{ item.email }}</td>
+                    <td class="align-middle">{{ item.telefone }}</td>
+                  {% else %}
+                    <td class="align-middle"><span class="badge bg-info text-dark">{{ item.cnpj }}</span></td>
+                    <td class="align-middle">{{ item.contato }}</td>
+                    <td class="align-middle">{{ item.tipo_distribuicao }}</td>
+                  {% endif %}
+                  <td class="align-middle">
+                     {% if "Cliente" in titulo %}
+                        <a href="{% url 'editar_cliente' item.pk %}" class="btn btn-sm btn-outline-primary">Editar</a>
+                        <a href="{% url 'excluir_cliente' item.pk %}" class="btn btn-sm btn-outline-danger">Excluir</a>
+                      {% else %}
+                        <a href="{% url 'editar_fornecedor' item.pk %}" class="btn btn-sm btn-outline-primary">Editar</a>
+                        <a href="{% url 'excluir_fornecedor' item.pk %}" class="btn btn-sm btn-outline-danger">Excluir</a>
+                      {% endif %}
+                 
+                 
+                  </td>
+                </tr>
+                {% empty %}
+                <tr>
+                  <td colspan="6" class="text-center py-4 text-muted">Nenhum registro encontrado.</td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
         </div>
+      </div>
+
     {% else %}
       <div class="row justify-content-center">
         <div class="col-md-6">
           <form method="post">
-              {% csrf_token %}
+            {% csrf_token %}
 
+            {% if botao == "OBLITERAR" %}
+              <h4>Deseja realmente excluir este item?</h4>
+              <div class="alert alert-danger fs-5" role="alert">
+                {{ object }}
+              </div>
+              <button type="submit" class="btn btn-danger">OBLITERAR ! !</button>
+              <a href="../" class="btn btn-secondary">Cancelar</a>
+            {% else %}
               {{ form|crispy }}
-
-
-              {% if botao == "OBLITERAR"%}
-
-                <h4>Deseja realmente excluir este item?</h4>
-
-                <div class="alert alert-danger fs-5" role="alert">
-                  {{ object }}
-                </div>
-
-                <button type="submit" class="btn btn-danger">
-                    OBLITERAR !  !
-                </button>
-              {% else %}
-                <button type="submit" class="btn btn-primary">
-                    {{ botao }}
-                </button>
+              <button type="submit" class="btn btn-primary w-100 mt-3">{{ botao }}</button>
             {% endif %}
-    {% endif %}
-    
-        </form>
+          </form>
+        </div>
       </div>
-    </div>
+    {% endif %}
   </div>
 </section>
 {% endblock content %}
