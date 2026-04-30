@@ -48,8 +48,8 @@ class Filme(models.Model):
     descricao = models.CharField(max_length=10, verbose_name="Descrição")
     categoria=models.ForeignKey(Categoria, on_delete=models.PROTECT)
     classificacao = models.CharField(max_length=2,  verbose_name="Classificação")
-    prazo_devolucao=models.IntegerField(max=4,verbose_name="Prazo de devolução", help_text="Prazo em dias")
-    ano_lancamento=models.IntegerField(max=4, verbose_name="Ano de lançamento")
+    prazo_devolucao=models.IntegerField(max_length=4,verbose_name="Prazo de devolução", help_text="Prazo em dias")
+    ano_lancamento=models.IntegerField(max_length=4, verbose_name="Ano de lançamento")
 
 
 
