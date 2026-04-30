@@ -61,3 +61,21 @@ class Locacao(models.Model):
     data_devolucao=models.DateField(auto_now_add=True)
 
 
+class Multa(models.Model):
+    valor = models.FloatField(verbose_name="Valor")
+    dias_atraso = models.IntegerField(verbose_name="Dias de Atraso")
+    paga = models.BooleanField(default=False, verbose_name="Paga")
+    data_gerada = models.DateTimeField(auto_now_add=True, verbose_name="Data Gerada")
+    locacao = models.OneToOneField(Locacao, on_delete=models.PROTECT, related_name='multa',verbose_name="Locação")
+
+    #def __str__(self):
+        #status = "Paga" if self.paga else "Pendente"
+        #return f"Multa {self.id} - R$ {self.valor} ({status})"
+
+
+class Pagamento(models.Model):
+    valor_pago = models.FloatField(verbose_name="Valor Pago")
+    data_pagamento = models.DateTimeField(auto_now_add=True, verbose_name="Data do Pagamento")
+    metodo_pagamento = models.CharField(max_length=50, verbose_name="Método de Pagamento")
+    locacao = models.ForeignKey(Locacao, on_delete=models.PROTECT, related_name='pagamentos',verbose_name="Locação")
+    comprovante_gerado = models.BooleanField(default=False, verbose_name="Comprovante Gerado")
