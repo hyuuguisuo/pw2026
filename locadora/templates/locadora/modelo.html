@@ -1,3 +1,4 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -16,6 +17,7 @@
             flex-direction: column;
             min-height: 100vh;
             background-color: #f8f9fa;
+            padding-top:110px;
         }
         
         main {
@@ -32,13 +34,21 @@
 </head>
 <body>
     <!-- Navbar -->
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-        <div class="container-fluid">
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                <span class="navbar-toggler-icon"></span>
-            </button>
+     
+    {% block navbar %}
+    <nav class="navbar navbar-dark bg-dark fixed-top">
+        <div class="container">
+
+            <a class="navbar-brand" href="{% url 'página_inicial' %}">WEBSITE - "LOCADORA" DE FILMES</a>
+
+            <form class="d-flex">
+            <input class="form-control me-2" type="search" placeholder="Buscar">
+            <button class="btn btn-outline-light">Buscar</button>
+            </form>
+
         </div>
     </nav>
+    {% endblock %}
 
     <!-- Main Content -->
     <main class="container my-5">
@@ -61,24 +71,24 @@
         <div class="container">
             <div class="row">
                 <div class="col-md-4 mb-3">
-                    <h5>Sobre Nós</h5>
-                    <p>Somos a melhor locadora de carros online da região, com frotas modernas e preços competitivos.</p>
+                    <h5><b>Sobre Nós</b></h5>
+                    <p>Somos dois estudantes do 4º de INFO realizando um trabalho para a disciplina de Programação para WEB.</p>
                 </div>
                 <div class="col-md-4 mb-3">
-                    <h5>Links Rápidos</h5>
+                    
                 </div>
                 <div class="col-md-4 mb-3">
                     <h5>Contato</h5>
                     <p>
-                        Email: contato@locadoramax.com<br>
-                        Telefone: (11) 9999-9999<br>
-                        Endereço: Rua Principal, 123 - São Paulo
+                        Email: contato@locadoradefilmes.com<br>
+                        Telefone: (44) 9999-9999<br>
+                        Endereço: Rua Principal, 123 - Paranavai
                     </p>
                 </div>
             </div>
             <hr class="bg-white">
             <div class="text-center">
-                <p>&copy; 2026 LocadoraMax. Todos os direitos reservados.</p>
+                <p>&copy; 2026 CINEMAIF. Todos os direitos reservados.</p>
             </div>
         </div>
     </footer>
