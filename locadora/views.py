@@ -120,3 +120,4 @@ class Detail_Cliente(DetailView):
     model = Cliente
     template_name = 'locadora/form.html'
 
+

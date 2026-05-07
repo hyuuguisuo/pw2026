@@ -23,6 +23,7 @@
                     <th>CPF</th>
                     <th>E-mail</th>
                     <th>Telefone</th>
+                    
                   {% else %}
                     <th>CNPJ</th>
                     <th>Contato</th>
@@ -41,6 +42,7 @@
                     <td class="align-middle">{{ item.cpf }}</td>
                     <td class="align-middle">{{ item.email }}</td>
                     <td class="align-middle">{{ item.telefone }}</td>
+                  
                   {% else %}
                     <td class="align-middle"><span class="badge bg-info text-dark">{{ item.cnpj }}</span></td>
                     <td class="align-middle">{{ item.contato }}</td>

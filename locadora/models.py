@@ -27,55 +27,59 @@ class Fornecedor(models.Model):
 
 
 class Genero(models.Model):
-    tipo = models.CharField(max_length=100)
-    descricao = models.TextField()
+    nome = models.CharField(max_length=100)
     def __str__(self):
         return f"{self.titulo}\n{self.descricao}\n"
 
     
 class Categoria(models.Model):
-    # genero = models.OneToOneField()
-    multa_atraso = models.FloatField()
-    valor_mensal = models.FloatField()
-    valor_promocao = models.FloatField()
+    nome = models.CharField(max_length=100)
+    prazo_devolucao=models.IntegerField(verbose_name="Prazo de devolução", help_text="Prazo em dias", default=30)
+    preco = models.DecimalField(verbose_name="preço", decimal_places=2, max_digits=6)
 
     # def __str__(self):
     #     return f"{self.nome}"
 
 class Filme(models.Model):
+    CLASSIFICACAO = (
+        ("L", "Livre"),
+        ("A10", "10 anos"),
+        ("A12", "12 Anos"),
+    )
     titulo = models.CharField(max_length=50, verbose_name="Título", help_text="Digite o titulo do filme")
     duração = models.CharField(max_length=10, verbose_name="Duração",help_text="Digite a duração do filme")
     descricao = models.CharField(max_length=10, verbose_name="Descrição")
-    categoria=models.ForeignKey(Categoria, on_delete=models.PROTECT)
-    classificacao = models.CharField(max_length=2,  verbose_name="Classificação")
-    prazo_devolucao=models.IntegerField(max_length=4,verbose_name="Prazo de devolução", help_text="Prazo em dias")
     ano_lancamento=models.IntegerField(max_length=4, verbose_name="Ano de lançamento")
-
-
+    
+    classificacao = models.CharField(max_length=2,  verbose_name="Classificação", choices=CLASSIFICACAO)
+    categoria=models.ForeignKey(Categoria, on_delete=models.PROTECT)
 
 
 class Locacao(models.Model):
+    METODOS_PAGAMENTO = (
+        ("PIX", "PIX"),
+        ("CC", "Cartão de crédito"),
+        ("débito", "Débito"),
+    )
     cliente=models.ForeignKey(Cliente, on_delete=models.PROTECT)
     filme=models.ForeignKey(Filme, on_delete=models.PROTECT)
-    data_locacao=models.DateField(auto_now_add=True)
-    data_devolucao=models.DateField(auto_now_add=True)
+    
+    data_locacao=models.DateTimeField(auto_now_add=True)
+    data_devolucao=models.DateTimeField()
 
+    valor = models.DecimalField(verbose_name="preço", decimal_places=2, max_digits=6)
+    valor_pago = models.DecimalField(verbose_name="preço", decimal_places=2, max_digits=6, default=0)
+    data_pagamento = models.DateTimeField(verbose_name="Data do Pagamento", null=True, blank=True)
+    metodo_pagamento = models.CharField(max_length=50, verbose_name="Método de Pagamento", blank=True, null=True, choices=METODOS_PAGAMENTO)
 
-class Multa(models.Model):
-    valor = models.FloatField(verbose_name="Valor")
-    dias_atraso = models.IntegerField(verbose_name="Dias de Atraso")
-    paga = models.BooleanField(default=False, verbose_name="Paga")
-    data_gerada = models.DateTimeField(auto_now_add=True, verbose_name="Data Gerada")
-    locacao = models.OneToOneField(Locacao, on_delete=models.PROTECT, related_name='multa',verbose_name="Locação")
+    def save(self):
+        # User biblioteca relativedelta
+        if not self.data_devolucao:
+            #                        data           +       int em dias
+            self.data_devolucao = self.data_locacao + self.filme.categoria.prazo_devolucao
 
-    #def __str__(self):
-        #status = "Paga" if self.paga else "Pendente"
-        #return f"Multa {self.id} - R$ {self.valor} ({status})"
+        if not self.valor:
+            # pega também o valor
+            self.valor = self.filme.categoria.preco
 
-
-class Pagamento(models.Model):
-    valor_pago = models.FloatField(verbose_name="Valor Pago")
-    data_pagamento = models.DateTimeField(auto_now_add=True, verbose_name="Data do Pagamento")
-    metodo_pagamento = models.CharField(max_length=50, verbose_name="Método de Pagamento")
-    locacao = models.ForeignKey(Locacao, on_delete=models.PROTECT, related_name='pagamentos',verbose_name="Locação")
-    comprovante_gerado = models.BooleanField(default=False, verbose_name="Comprovante Gerado")
+        super().save()
