@@ -7,7 +7,7 @@ from django.views.generic.list import ListView
 
 from django.urls import reverse_lazy
 
-from .models import Cliente, Fornecedor, Genero, Categoria
+from .models import Cliente, Fornecedor, Genero, Categoria, Filme, Locacao
 
 
 class Index(TemplateView):
@@ -73,7 +73,6 @@ class Detail_Fornecedor(DetailView):
 
 # VIEWS CLIENT
 
-
 class Create_Cliente(CreateView):
     model = Cliente
     fields = ['nome', 'email', 'cpf', 'telefone', 'codigo']
@@ -121,3 +120,194 @@ class Detail_Cliente(DetailView):
     template_name = 'locadora/form.html'
 
 
+# VIEWS FILME
+
+
+class Create_Filme(CreateView):
+    model = Filme
+    fields = ['classificacao', 'titulo', 'duração', 'descricao', 'ano_lancamento', 'categoria', 'genero']
+    template_name = 'locadora/form.html'
+    success_url = reverse_lazy('página_inicial')
+    extra_context = {
+        "titulo": "Cadastro de Filme",
+        "botao": "Cadastrar"
+    }
+
+
+class Update_Filme(UpdateView):
+    model = Filme
+    fields = ['classificacao', 'titulo', 'duração', 'descricao', 'ano_lancamento', 'categoria', 'genero']
+    template_name = 'locadora/form.html'
+    success_url = reverse_lazy('página_inicial')
+    extra_context = {
+        "titulo": "Edição de Filme",
+        "botao": "Salvar"
+    }
+
+
+class Delete_Filme(DeleteView):
+    model = Filme
+    template_name = 'locadora/form.html'
+    success_url = reverse_lazy('listar_filme')
+    extra_context = {
+        "titulo": "Excluir Filme",
+        "botao": "OBLITERAR"
+    }
+
+
+class List_Filme(ListView):
+    model = Filme
+    template_name = 'locadora/form.html'
+    extra_context = {
+        "titulo": "Listar Filme",
+        "botao": "LISTAR"
+        }
+    
+
+class Detail_Filme(DetailView):
+    model = Filme
+    template_name = 'locadora/form.html'
+
+
+
+# VIEWS GENERO
+
+class Create_Genero(CreateView):
+    model = Genero
+    fields = ['classificacao', 'titulo', 'duração', 'descricao', 'ano_lancamento', 'categoria', 'genero']
+    template_name = 'locadora/form.html'
+    success_url = reverse_lazy('página_inicial')
+    extra_context = {
+        "titulo": "Cadastro de Gênero",
+        "botao": "Cadastrar"
+    }
+
+
+class Update_Genero(UpdateView):
+    model = Genero
+    fields = ['classificacao', 'titulo', 'duração', 'descricao', 'ano_lancamento', 'categoria', 'genero']
+    template_name = 'locadora/form.html'
+    success_url = reverse_lazy('página_inicial')
+    extra_context = {
+        "titulo": "Edição de Gênero",
+        "botao": "Salvar"
+    }
+
+
+class Delete_Genero(DeleteView):
+    model = Genero
+    template_name = 'locadora/form.html'
+    success_url = reverse_lazy('listar_filme')
+    extra_context = {
+        "titulo": "Excluir Genero",
+        "botao": "OBLITERAR"
+    }
+
+
+class List_Genero(ListView):
+    model = Genero
+    template_name = 'locadora/form.html'
+    extra_context = {
+        "titulo": "Listar Gênero",
+        "botao": "LISTAR"
+    }
+    
+
+class Detail_Genero(DetailView):
+    model = Genero
+    template_name = 'locadora/form.html'
+
+    
+# VIEWS CATEGORIA
+
+class Create_Categoria(CreateView):
+    model = Categoria
+    fields = ['classificacao', 'titulo', 'duração', 'descricao', 'ano_lancamento', 'categoria', 'genero']
+    template_name = 'locadora/form.html'
+    success_url = reverse_lazy('página_inicial')
+    extra_context = {
+        "titulo": "Cadastro de Categoria",
+        "botao": "Cadastrar"
+    }
+
+
+class Update_Genero(UpdateView):
+    model = Genero
+    fields = ['classificacao', 'titulo', 'duração', 'descricao', 'ano_lancamento', 'categoria', 'genero']
+    template_name = 'locadora/form.html'
+    success_url = reverse_lazy('página_inicial')
+    extra_context = {
+        "titulo": "Edição de Categoria",
+        "botao": "Salvar"
+    }
+
+
+class Delete_Categoria(DeleteView):
+    model = Categoria
+    template_name = 'locadora/form.html'
+    success_url = reverse_lazy('listar_filme')
+    extra_context = {
+        "titulo": "Excluir Categoria",
+        "botao": "OBLITERAR"
+    }
+
+
+class List_Categoria(ListView):
+    model = Categoria
+    template_name = 'locadora/form.html'
+    extra_context = {
+        "titulo": "Listar Categoria",
+        "botao": "LISTAR"
+    }
+    
+
+class Detail_Categoria(DetailView):
+    model = Categoria
+    template_name = 'locadora/form.html'
+
+# VIEWS LOCACAO
+
+class Create_Locacao(CreateView):
+    model = Locacao
+    fields = ['classificacao', 'titulo', 'duração', 'descricao', 'ano_lancamento', 'categoria', 'genero']
+    template_name = 'locadora/form.html'
+    success_url = reverse_lazy('página_inicial')
+    extra_context = {
+        "titulo": "Cadastro de Locação",
+        "botao": "Cadastrar"
+    }
+
+
+class Update_Locacao(UpdateView):
+    model = Locacao
+    fields = ['classificacao', 'titulo', 'duração', 'descricao', 'ano_lancamento', 'categoria', 'genero']
+    template_name = 'locadora/form.html'
+    success_url = reverse_lazy('página_inicial')
+    extra_context = {
+        "titulo": "Edição de Locação",
+        "botao": "Salvar"
+    }
+
+
+class Delete_Locacao(DeleteView):
+    model = Locacao
+    template_name = 'locadora/form.html'
+    success_url = reverse_lazy('listar_filme')
+    extra_context = {
+        "titulo": "Excluir Locação",
+        "botao": "OBLITERAR"
+    }
+
+
+class List_Locacao(ListView):
+    model = Locacao
+    template_name = 'locadora/form.html'
+    extra_context = {
+        "titulo": "Listar Locação",
+        "botao": "LISTAR"
+    }
+    
+
+class Detail_Genero(DetailView):
+    model = Locacao
+    template_name = 'locadora/form.html'

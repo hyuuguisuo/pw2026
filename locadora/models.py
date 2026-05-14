@@ -33,7 +33,7 @@ class Genero(models.Model):
 
     
 class Categoria(models.Model):
-    nome = models.CharField(max_length=100)
+    nome = models.CharField(max_length=100, verbose_name="nome")
     prazo_devolucao=models.IntegerField(verbose_name="Prazo de devolução", help_text="Prazo em dias", default=30)
     preco = models.DecimalField(verbose_name="preço", decimal_places=2, max_digits=6)
 
@@ -52,10 +52,11 @@ class Filme(models.Model):
     titulo = models.CharField(max_length=50, verbose_name="Título", help_text="Digite o titulo do filme")
     duração = models.CharField(max_length=10, verbose_name="Duração",help_text="Digite a duração do filme")
     descricao = models.CharField(max_length=10, verbose_name="Descrição")
-    ano_lancamento=models.IntegerField(max_length=4, verbose_name="Ano de lançamento")
+    ano_lancamento=models.IntegerField(verbose_name="Ano de lançamento")
     
-    classificacao = models.CharField(max_length=2,  verbose_name="Classificação", choices=CLASSIFICACAO)
+    classificacao = models.CharField(verbose_name="Classificação", choices=CLASSIFICACAO)
     categoria=models.ForeignKey(Categoria, on_delete=models.PROTECT)
+    genero=models.ForeignKey(Genero, on_delete=models.PROTECT)
 
 
 class Locacao(models.Model):

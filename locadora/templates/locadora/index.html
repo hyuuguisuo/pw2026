@@ -24,58 +24,40 @@
 }
 
 </style>
-{% endblock %}
+{% endblock extra_css %}
 
 </head>
 <body>
 
 {% block navbar %}
-<nav class="navbar navbar-dark bg-dark fixed-top">
-  <div class="container">
-
-    <a class="navbar-brand" href="#">WEBSITE - "LOCADORA" DE FILMES</a>
-
-    <form class="d-flex">
-      <input class="form-control me-2" type="search" placeholder="Buscar">
-      <button class="btn btn-outline-light">Buscar</button>
-    </form>
-
-  </div>
-</nav>
-
-<!-- TOP BAR DE SEÇÕES -->
-<div class="bg-secondary section-bar">
-
-  <div class="container">
-
-    <ul class="nav nav-pills justify-content-center py-2">
-
-      <li class="nav-item">
-        <a class="nav-link text-white active" href="#">Início</a>
-      </li>
-
-      <li class="nav-item">
-        <a class="nav-link text-white" href="#">Filmes</a>
-      </li>
-
-      <li class="nav-item">
-        <a class="nav-link text-white" href="#">Séries</a>
-      </li>
-
-      <li class="nav-item">
-        <a class="nav-link text-white" href="#">TV</a>
-      </li>
-
-      <li class="nav-item">
-        <a class="nav-link text-white" href="#">Listas</a>
-      </li>
-
-    </ul>
-
-  </div>
-
-</div>
-{% endblock %}
+    <nav class="navbar navbar-dark bg-dark fixed-top">
+        <div class="container">
+            <a class="navbar-brand" href="#">LOCADORA DE FILMES+</a>
+          
+            <ul id="partesup" class="nav nav-pills justify-content-center py-2">
+                <li class="nav-item">
+                    <a class="nav-link text-white active" href="{% url 'página_inicial' %}">Início</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link text-white" href="{% url 'listar_filme' %}">Filmes</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link text-white" href="{% url 'listar_cliente' %}">Clientes</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link text-white" href="{% url 'listar_fornecedor' %}">Fornecedores</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link text-white">Em Breve...</a>
+                </li>
+            </ul>
+            <!-- <form class="d-flex">
+                <input class="form-control me-2" type="search" placeholder="Buscar">
+                <button class="btn btn-outline-light">Buscar</button>
+            </form> -->
+        </div>
+    </nav>
+    {% endblock %}
 
 {% block content %}
 <!-- CONTEÚDO -->

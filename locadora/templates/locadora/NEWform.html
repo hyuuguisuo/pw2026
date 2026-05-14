@@ -248,7 +248,7 @@
                 </tr>
                 
                 {% endfor %}
-                {% elif botao == "LISTAR" and "Locação" in titulo%}
+      {% elif botao == "LISTAR" and "Locação" in titulo%}
       <button class="add" onclick="">+</button>
       <div class="card shadow-sm">
             <div class="card-body p-0">
@@ -320,9 +320,9 @@
               <button type="submit" class="btn btn-danger">OBLITERAR ! !</button>
               <a href="../" class="btn btn-secondary">Cancelar</a>
             {% else %}
-              {{ form|crispy }}
               <button type="submit" class="btn btn-primary w-100 mt-3">{{ botao }}</button>
             {% endif %}
+            {{ form|crispy }}
           </form>
         </div>
       </div>
