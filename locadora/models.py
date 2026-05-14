@@ -44,7 +44,10 @@ class Filme(models.Model):
     CLASSIFICACAO = (
         ("L", "Livre"),
         ("A10", "10 anos"),
-        ("A12", "12 Anos"),
+        ("A12", "12 anos"),
+        ("A14" , "14 anos"),
+        ("A16" , "16 anos"),
+        ("A18", "18 anos")
     )
     titulo = models.CharField(max_length=50, verbose_name="Título", help_text="Digite o titulo do filme")
     duração = models.CharField(max_length=10, verbose_name="Duração",help_text="Digite a duração do filme")
@@ -60,6 +63,9 @@ class Locacao(models.Model):
         ("PIX", "PIX"),
         ("CC", "Cartão de crédito"),
         ("débito", "Débito"),
+        ("boleto" , " Boletos Bancários"),
+        ("carteira digital", "e-wallets"),
+        
     )
     cliente=models.ForeignKey(Cliente, on_delete=models.PROTECT)
     filme=models.ForeignKey(Filme, on_delete=models.PROTECT)
