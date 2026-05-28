@@ -1,8 +1,34 @@
 from django.urls import path
 from .views import *
 
+from django.contrib.auth.views import (
+     LoginView,
+     LogoutView,
+     PasswordChangeView,
+)
+
 urlpatterns = [
-  path("inicio/", Index.as_view(), name="página_inicial"),
+
+  # URL DE AUTENTICAÇÃO
+  
+  path("login/", LoginView.as_view(
+      template_name ='locadora/form.html',
+      extra_context = {
+          "titulo": "Login",
+          "botao": "Entrar"
+      }
+  ), name="login"),
+  path("logout/", LogoutView.as_view(next_page="login"), name="logout"),
+  path("alterar_senha/", PasswordChangeView.as_view(
+     template_name = 'locadora/form.html',
+     extra_context = {
+         "titulo": "Alterar Senha",
+         "botao": "Salvar"
+     }    
+  ), name="alterar_senha"),
+
+
+  path("", Index.as_view(), name="página_inicial"),
   path("sobre/", Sobre.as_view(), name="sobre"),
   path("contato/", Contato.as_view(), name="contato"),
   

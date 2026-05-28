@@ -9,6 +9,7 @@ from django.urls import reverse_lazy
 
 from .models import Cliente, Fornecedor, Genero, Categoria, Filme, Locacao
 
+from django.contrib.auth.mixins import LoginRequiredMixin
 
 class Index(TemplateView):
     template_name = "locadora/index.html"
@@ -19,12 +20,15 @@ class Sobre(TemplateView):
 class Contato(TemplateView):
     template_name = "locadora/contato.html"
     
-    
+##### AUTENTICAÇÃO VIEWS
+
+
+
     
 #####  VIEWS FORNECEDOR 
 
 
-class Create_Fornecedor(CreateView):
+class Create_Fornecedor(LoginRequiredMixin, CreateView):
     model = Fornecedor
     fields = ['nome', 'cnpj', 'contato', 'endereco', 'tipo_distribuicao']
     template_name = 'locadora/form.html'
@@ -35,7 +39,7 @@ class Create_Fornecedor(CreateView):
     }
 
 
-class Update_Fornecedor(UpdateView):
+class Update_Fornecedor(LoginRequiredMixin, UpdateView):
     model = Fornecedor
     fields = ['nome', 'cnpj', 'contato', 'endereco', 'tipo_distribuicao']
     template_name = 'locadora/form.html'
@@ -46,7 +50,7 @@ class Update_Fornecedor(UpdateView):
     }
     
     
-class Delete_Fornecedor(DeleteView):
+class Delete_Fornecedor(LoginRequiredMixin, DeleteView):
     model = Fornecedor
     template_name = 'locadora/form.html'
     success_url = reverse_lazy('listar_fornecedor')
@@ -56,7 +60,7 @@ class Delete_Fornecedor(DeleteView):
     }
     
     
-class List_Fornecedor(ListView):
+class List_Fornecedor(LoginRequiredMixin, ListView):
     model = Fornecedor
     template_name = 'locadora/form.html'
     extra_context = {
@@ -65,7 +69,7 @@ class List_Fornecedor(ListView):
     }
     
     
-class Detail_Fornecedor(DetailView):
+class Detail_Fornecedor(LoginRequiredMixin, DetailView):
     model = Fornecedor
     template_name = 'locadora/form.html'
 
@@ -73,7 +77,7 @@ class Detail_Fornecedor(DetailView):
 
 # VIEWS CLIENT
 
-class Create_Cliente(CreateView):
+class Create_Cliente(LoginRequiredMixin, CreateView):
     model = Cliente
     fields = ['nome', 'email', 'cpf', 'telefone', 'codigo']
     template_name = 'locadora/form.html'
@@ -84,7 +88,7 @@ class Create_Cliente(CreateView):
     }
 
 
-class Update_Cliente(UpdateView):
+class Update_Cliente(LoginRequiredMixin, UpdateView):
     model = Cliente
     fields = ['nome', 'email', 'cpf', 'telefone', 'codigo']
     template_name = 'locadora/form.html'
@@ -95,7 +99,7 @@ class Update_Cliente(UpdateView):
     }
 
 
-class Delete_Cliente(DeleteView):
+class Delete_Cliente(LoginRequiredMixin, DeleteView):
     model = Cliente
     template_name = 'locadora/form.html'
     success_url = reverse_lazy('listar_cliente')
@@ -105,7 +109,7 @@ class Delete_Cliente(DeleteView):
     }
 
 
-class List_Cliente(ListView):
+class List_Cliente(LoginRequiredMixin, ListView):
     model = Cliente
     template_name = 'locadora/form.html'
     extra_context = {
@@ -115,7 +119,7 @@ class List_Cliente(ListView):
 
 
 
-class Detail_Cliente(DetailView):
+class Detail_Cliente(LoginRequiredMixin, DetailView):
     model = Cliente
     template_name = 'locadora/form.html'
 
@@ -123,7 +127,7 @@ class Detail_Cliente(DetailView):
 # VIEWS FILME
 
 
-class Create_Filme(CreateView):
+class Create_Filme(LoginRequiredMixin, CreateView):
     model = Filme
     fields = ['classificacao', 'titulo', 'duração', 'descricao', 'ano_lancamento', 'categoria', 'genero']
     template_name = 'locadora/form.html'
@@ -134,7 +138,7 @@ class Create_Filme(CreateView):
     }
 
 
-class Update_Filme(UpdateView):
+class Update_Filme(LoginRequiredMixin, UpdateView):
     model = Filme
     fields = ['classificacao', 'titulo', 'duração', 'descricao', 'ano_lancamento', 'categoria', 'genero']
     template_name = 'locadora/form.html'
@@ -145,7 +149,7 @@ class Update_Filme(UpdateView):
     }
 
 
-class Delete_Filme(DeleteView):
+class Delete_Filme(LoginRequiredMixin, DeleteView):
     model = Filme
     template_name = 'locadora/form.html'
     success_url = reverse_lazy('listar_filme')
@@ -155,7 +159,7 @@ class Delete_Filme(DeleteView):
     }
 
 
-class List_Filme(ListView):
+class List_Filme(LoginRequiredMixin, ListView):
     model = Filme
     template_name = 'locadora/form.html'
     extra_context = {
@@ -164,7 +168,7 @@ class List_Filme(ListView):
         }
     
 
-class Detail_Filme(DetailView):
+class Detail_Filme(LoginRequiredMixin, DetailView):
     model = Filme
     template_name = 'locadora/form.html'
 
@@ -172,7 +176,7 @@ class Detail_Filme(DetailView):
 
 # VIEWS GENERO
 
-class Create_Genero(CreateView):
+class Create_Genero(LoginRequiredMixin, CreateView):
     model = Genero
     fields = ['classificacao', 'titulo', 'duração', 'descricao', 'ano_lancamento', 'categoria', 'genero']
     template_name = 'locadora/form.html'
@@ -183,7 +187,7 @@ class Create_Genero(CreateView):
     }
 
 
-class Update_Genero(UpdateView):
+class Update_Genero(LoginRequiredMixin, UpdateView):
     model = Genero
     fields = ['classificacao', 'titulo', 'duração', 'descricao', 'ano_lancamento', 'categoria', 'genero']
     template_name = 'locadora/form.html'
@@ -194,7 +198,7 @@ class Update_Genero(UpdateView):
     }
 
 
-class Delete_Genero(DeleteView):
+class Delete_Genero(LoginRequiredMixin, DeleteView):
     model = Genero
     template_name = 'locadora/form.html'
     success_url = reverse_lazy('listar_filme')
@@ -204,7 +208,7 @@ class Delete_Genero(DeleteView):
     }
 
 
-class List_Genero(ListView):
+class List_Genero(LoginRequiredMixin, ListView):
     model = Genero
     template_name = 'locadora/form.html'
     extra_context = {
@@ -213,14 +217,14 @@ class List_Genero(ListView):
     }
     
 
-class Detail_Genero(DetailView):
+class Detail_Genero(LoginRequiredMixin, DetailView):
     model = Genero
     template_name = 'locadora/form.html'
 
     
 # VIEWS CATEGORIA
 
-class Create_Categoria(CreateView):
+class Create_Categoria(LoginRequiredMixin, CreateView):
     model = Categoria
     fields = ['classificacao', 'titulo', 'duração', 'descricao', 'ano_lancamento', 'categoria', 'genero']
     template_name = 'locadora/form.html'
@@ -231,7 +235,7 @@ class Create_Categoria(CreateView):
     }
 
 
-class Update_Genero(UpdateView):
+class Update_Genero(LoginRequiredMixin, UpdateView):
     model = Genero
     fields = ['classificacao', 'titulo', 'duração', 'descricao', 'ano_lancamento', 'categoria', 'genero']
     template_name = 'locadora/form.html'
@@ -242,7 +246,7 @@ class Update_Genero(UpdateView):
     }
 
 
-class Delete_Categoria(DeleteView):
+class Delete_Categoria(LoginRequiredMixin, DeleteView):
     model = Categoria
     template_name = 'locadora/form.html'
     success_url = reverse_lazy('listar_filme')
@@ -252,7 +256,7 @@ class Delete_Categoria(DeleteView):
     }
 
 
-class List_Categoria(ListView):
+class List_Categoria(LoginRequiredMixin, ListView):
     model = Categoria
     template_name = 'locadora/form.html'
     extra_context = {
@@ -261,13 +265,13 @@ class List_Categoria(ListView):
     }
     
 
-class Detail_Categoria(DetailView):
+class Detail_Categoria(LoginRequiredMixin, DetailView):
     model = Categoria
     template_name = 'locadora/form.html'
 
 # VIEWS LOCACAO
 
-class Create_Locacao(CreateView):
+class Create_Locacao(LoginRequiredMixin, CreateView):
     model = Locacao
     fields = ['classificacao', 'titulo', 'duração', 'descricao', 'ano_lancamento', 'categoria', 'genero']
     template_name = 'locadora/form.html'
@@ -278,7 +282,7 @@ class Create_Locacao(CreateView):
     }
 
 
-class Update_Locacao(UpdateView):
+class Update_Locacao(LoginRequiredMixin, UpdateView):
     model = Locacao
     fields = ['classificacao', 'titulo', 'duração', 'descricao', 'ano_lancamento', 'categoria', 'genero']
     template_name = 'locadora/form.html'
@@ -289,7 +293,7 @@ class Update_Locacao(UpdateView):
     }
 
 
-class Delete_Locacao(DeleteView):
+class Delete_Locacao(LoginRequiredMixin, DeleteView):
     model = Locacao
     template_name = 'locadora/form.html'
     success_url = reverse_lazy('listar_filme')
@@ -299,7 +303,7 @@ class Delete_Locacao(DeleteView):
     }
 
 
-class List_Locacao(ListView):
+class List_Locacao(LoginRequiredMixin, ListView):
     model = Locacao
     template_name = 'locadora/form.html'
     extra_context = {
@@ -308,6 +312,6 @@ class List_Locacao(ListView):
     }
     
 
-class Detail_Genero(DetailView):
+class Detail_Genero(LoginRequiredMixin, DetailView):
     model = Locacao
     template_name = 'locadora/form.html'
