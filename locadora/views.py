@@ -37,7 +37,11 @@ class Create_Fornecedor(LoginRequiredMixin, CreateView):
         "titulo" : "Cadastro de Fornecedor",
         "botao" : "Cadastrar"
     }
-
+    def form_valid(self, form):
+        form.instance.cadrastado_por = self.request.user
+        url = super().form_valid(form)
+        print(form.instance.cadrastado_por)
+        return url
 
 class Update_Fornecedor(LoginRequiredMixin, UpdateView):
     model = Fornecedor
@@ -67,6 +71,12 @@ class List_Fornecedor(LoginRequiredMixin, ListView):
         "titulo": "Listar Fornecedor",
         "botao": "LISTAR"
     }
+    def get_queryset(self):
+        queryset = super().get_queryset()
+
+        queryset = queryset.order_by('id')
+
+        return queryset
     
     
 class Detail_Fornecedor(LoginRequiredMixin, DetailView):
@@ -86,7 +96,11 @@ class Create_Cliente(LoginRequiredMixin, CreateView):
         "titulo": "Cadastro de Cliente",
         "botao": "Cadastrar"
     }
+    def form_valid(self, form):
+        form.instance.cadrastado_por = self.request.user
+        url = super().form_valid(form)
 
+        return url
 
 class Update_Cliente(LoginRequiredMixin, UpdateView):
     model = Cliente
@@ -129,14 +143,26 @@ class Detail_Cliente(LoginRequiredMixin, DetailView):
 
 class Create_Filme(LoginRequiredMixin, CreateView):
     model = Filme
-    fields = ['classificacao', 'titulo', 'duração', 'descricao', 'ano_lancamento', 'categoria', 'genero']
+    fields = [
+        'classificacao',
+        'titulo',
+        'duração',
+        'descricao',
+        'ano_lancamento',
+        'categoria',
+        'genero',
+    ]
     template_name = 'locadora/form.html'
     success_url = reverse_lazy('página_inicial')
     extra_context = {
         "titulo": "Cadastro de Filme",
         "botao": "Cadastrar"
     }
+    def form_valid(self, form):
+        form.instance.cadrastado_por = self.request.user
+        url = super().form_valid(form)
 
+        return url
 
 class Update_Filme(LoginRequiredMixin, UpdateView):
     model = Filme
@@ -185,6 +211,11 @@ class Create_Genero(LoginRequiredMixin, CreateView):
         "titulo": "Cadastro de Gênero",
         "botao": "Cadastrar"
     }
+    def form_valid(self, form):
+        form.instance.cadrastado_por = self.request.user
+        url = super().form_valid(form)
+
+        return url
 
 
 class Update_Genero(LoginRequiredMixin, UpdateView):
@@ -233,7 +264,11 @@ class Create_Categoria(LoginRequiredMixin, CreateView):
         "titulo": "Cadastro de Categoria",
         "botao": "Cadastrar"
     }
+    def form_valid(self, form):
+        form.instance.cadrastado_por = self.request.user
+        url = super().form_valid(form)
 
+        return url
 
 class Update_Genero(LoginRequiredMixin, UpdateView):
     model = Genero
@@ -280,7 +315,11 @@ class Create_Locacao(LoginRequiredMixin, CreateView):
         "titulo": "Cadastro de Locação",
         "botao": "Cadastrar"
     }
+    def form_valid(self, form):
+        form.instance.cadrastado_por = self.request.user
+        url = super().form_valid(form)
 
+        return url
 
 class Update_Locacao(LoginRequiredMixin, UpdateView):
     model = Locacao

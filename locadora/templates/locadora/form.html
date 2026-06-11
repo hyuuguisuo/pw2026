@@ -188,9 +188,13 @@
                   <th>ID</th>
                   <th>Nome</th>
                   
-                  <th>D</th>
-                  <th>E-mail</th>
-                  <th>Telefone</th>
+                  <th>CNPJ</th>
+                  <th>Contato</th>
+                  <th>Tipo de Distribuição</th>
+
+                  <th>Cadastrado Em:</th>
+                  <th>Modificado Em:</th>
+                  <th>Criador:</th>
 
                   <th>Ações</th>
                 </tr>
@@ -200,14 +204,19 @@
                   <td class="align-middle">{{ item.id }}</td>
                   <td class="align-middle fw-bold">{{ item.nome }}</td>
 
-                  <td class="align-middle"><span class="badge bg-info text-dark">{{ item.cnpj }}</span></td>
+                  <td class="align-middle">{{ item.cnpj }}</span></td>
                   <td class="align-middle">{{ item.contato }}</td>
                   <td class="align-middle">{{ item.tipo_distribuicao }}</td>
+
+                  <td class="align-middle"><span class="badge bg-info text-dark">{{ item.cadastrado_em }}</span></td>
+                  <td class="align-middle"><span class="badge bg-info text-dark">{{ item.atualizado_em }}</td>
+                  <td class="align-middle">{{ item.cadastrado_por }}</td>
 
                   <td class="align-middle">
                     <a href="{% url 'editar_fornecedor' item.pk %}" class="btn btn-sm btn-outline-primary">Editar</a>
                     <a href="{% url 'excluir_fornecedor' item.pk %}" class="btn btn-sm btn-outline-danger">Excluir</a>
                   </td>
+                  
                 </tr>
                 {% empty %}
                 <tr>

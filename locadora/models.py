@@ -8,10 +8,10 @@ class Cliente(models.Model):
     telefone = models.CharField(max_length=15)
     codigo = models.CharField(max_length=30, verbose_name="código")
     
+    cadastrado_por = models.ForeignKey("auth.User", on_delete=models.PROTECT, null=True)
     atualizado_em = models.DateTimeField(auto_now=True)
     cadastrado_em = models.DateTimeField(auto_now_add=True)
-    
-    # cadastrado_por = mo
+
     def __str__(self):
         return f"{self.nome} - {self.telefone}"
 
@@ -22,12 +22,23 @@ class Fornecedor(models.Model):
     endereco = models.CharField(max_length=100, verbose_name="endereço")
     tipo_distribuicao = models.CharField(max_length=50, verbose_name="tipo de distribuição")
 
+    cadastrado_por = models.ForeignKey("auth.User", on_delete=models.PROTECT, null=True)
+    atualizado_em = models.DateTimeField(auto_now=True)
+    cadastrado_em = models.DateTimeField(auto_now_add=True)
+
     def __str__(self):
         return f"{self.nome}"
 
+    class Meta:
+        ordering = ['-id']  # Sempre trará os mais novos primeiro por padrão
 
 class Genero(models.Model):
     nome = models.CharField(max_length=100)
+
+    cadastrado_por = models.ForeignKey("auth.User", on_delete=models.PROTECT, null=True)
+    atualizado_em = models.DateTimeField(auto_now=True)
+    cadastrado_em = models.DateTimeField(auto_now_add=True)
+
     def __str__(self):
         return f"{self.titulo}\n{self.descricao}\n"
 
@@ -36,6 +47,10 @@ class Categoria(models.Model):
     nome = models.CharField(max_length=100, verbose_name="nome")
     prazo_devolucao=models.IntegerField(verbose_name="Prazo de devolução", help_text="Prazo em dias", default=30)
     preco = models.DecimalField(verbose_name="preço", decimal_places=2, max_digits=6)
+
+    cadastrado_por = models.ForeignKey("auth.User", on_delete=models.PROTECT, null=True)
+    atualizado_em = models.DateTimeField(auto_now=True)
+    cadastrado_em = models.DateTimeField(auto_now_add=True)
 
     # def __str__(self):
     #     return f"{self.nome}"
@@ -58,6 +73,9 @@ class Filme(models.Model):
     categoria=models.ForeignKey(Categoria, on_delete=models.PROTECT)
     genero=models.ForeignKey(Genero, on_delete=models.PROTECT)
 
+    cadastrado_por = models.ForeignKey("auth.User", on_delete=models.PROTECT, null=True)
+    atualizado_em = models.DateTimeField(auto_now=True)
+    cadastrado_em = models.DateTimeField(auto_now_add=True)
 
 class Locacao(models.Model):
     METODOS_PAGAMENTO = (
@@ -78,6 +96,10 @@ class Locacao(models.Model):
     valor_pago = models.DecimalField(verbose_name="preço", decimal_places=2, max_digits=6, default=0)
     data_pagamento = models.DateTimeField(verbose_name="Data do Pagamento", null=True, blank=True)
     metodo_pagamento = models.CharField(max_length=50, verbose_name="Método de Pagamento", blank=True, null=True, choices=METODOS_PAGAMENTO)
+
+    cadastrado_por = models.ForeignKey("auth.User", on_delete=models.PROTECT, null=True)
+    atualizado_em = models.DateTimeField(auto_now=True)
+    cadastrado_em = models.DateTimeField(auto_now_add=True)
 
     def save(self):
         # User biblioteca relativedelta
