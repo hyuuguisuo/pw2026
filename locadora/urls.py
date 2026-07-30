@@ -26,6 +26,7 @@ urlpatterns = [
          "botao": "Salvar"
      }    
   ), name="alterar_senha"),
+  path("senha/alterar/concluido", UserPasswordChangeDone.as_view())
 
 
   path("", Index.as_view(), name="página_inicial"),

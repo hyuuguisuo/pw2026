@@ -6,7 +6,7 @@
 {% block navbar %}
     <nav class="navbar navbar-dark bg-dark fixed-top">
         <div class="container">
-            <a class="navbar-brand" href="#">LOCADORA DE FILMES+</a>
+            <a class="navbar-brand" href="#">LOCwADORA DE FILMES+</a>
             
             {% if "Cliente" in titulo %}
               <ul id="partesup" class="nav nav-pills justify-content-center py-2">
@@ -22,10 +22,7 @@
                   <li class="nav-item">
                       <a class="nav-link text-white" href="{% url 'listar_fornecedor' %}">Fornecedores</a>
                   </li>
-                  <li class="nav-item">
-                      <a class="nav-link text-white">Em Breve...</a>
-                  </li>
-              </ul>
+              
             {% endif %}
 
             {% if "Filme" in titulo %}
@@ -42,10 +39,7 @@
                   <li class="nav-item">
                       <a class="nav-link text-white" href="{% url 'listar_fornecedor' %}">Fornecedores</a>
                   </li>
-                  <li class="nav-item">
-                      <a class="nav-link text-white">Em Breve...</a>
-                  </li>
-              </ul>
+              
             {% endif %}
 
             {% if "Fornecedor" in titulo %}
@@ -62,10 +56,26 @@
                   <li class="nav-item">
                       <a class="nav-link text-white active" href="{% url 'listar_fornecedor' %}">Fornecedores</a>
                   </li>
-                  <li class="nav-item">
-                      <a class="nav-link text-white">Em Breve...</a>
-                  </li>
-              </ul>
+                  
+              
+
+              {% if request.user.is_authenticated %}
+                    <li class="nav-item">
+                        <form action="{% url 'logout' %}" method="post">
+                            {% csrf_token %}
+                            <button class="nav-link text-white">Sair</a>
+                        </form>
+                        
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-white" href="{% url 'password_change' %}">Alterar</a>
+                    </li>
+                {% else %}
+                    <li class="nav-item">
+                        <a class="nav-link text-white" href="{% url 'login' %}">Entrar<a>
+                    </li>
+                {% endif %}
+                </ul>
             {% endif %}
             <!-- <form class="d-flex">
                 <input class="form-control me-2" type="search" placeholder="Buscar">
