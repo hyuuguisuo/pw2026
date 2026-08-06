@@ -21,5 +21,7 @@ from django.urls import path,include #importar agora
 urlpatterns = [
     path("admin/", admin.site.urls),
     #Incluir as urls do app locadora
-    path("", include("locadora.urls") )
+    path("", include("locadora.urls") ),
+    #Urls do Django Debug Toolbar
+    path("__debug__/", include("debug_toolbar.urls")),
 ]

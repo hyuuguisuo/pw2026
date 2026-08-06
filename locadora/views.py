@@ -11,6 +11,8 @@ from .models import Cliente, Fornecedor, Genero, Categoria, Filme, Locacao
 
 from django.contrib.auth.mixins import LoginRequiredMixin
 
+from braces.views import GroupRequiredMixin
+
 class Index(TemplateView):
     template_name = "locadora/index.html"
 
@@ -22,13 +24,19 @@ class Contato(TemplateView):
     
 ##### AUTENTICAÇÃO VIEWS
 
-
+class UserPasswordChangeDone(TemplateView):
+    template_name = "locadora/form.html"
+    extra_context = {
+        "titulo": "Senha Alterada com Sucesso",
+        "botao": "Voltar"
+    }
+    reverse_lazy = reverse_lazy('página_inicial')
 
     
 #####  VIEWS FORNECEDOR 
 
 
-class Create_Fornecedor(LoginRequiredMixin, CreateView):
+class Create_Fornecedor(GroupRequiredMixin, CreateView):
     model = Fornecedor
     fields = ['nome', 'cnpj', 'contato', 'endereco', 'tipo_distribuicao']
     template_name = 'locadora/form.html'
@@ -42,8 +50,10 @@ class Create_Fornecedor(LoginRequiredMixin, CreateView):
         url = super().form_valid(form)
         print(form.instance.cadrastado_por)
         return url
+    
+    add_group_required = ["Funcionário", "Administrador"]
 
-class Update_Fornecedor(LoginRequiredMixin, UpdateView):
+class Update_Fornecedor(GroupRequiredMixin, UpdateView):
     model = Fornecedor
     fields = ['nome', 'cnpj', 'contato', 'endereco', 'tipo_distribuicao']
     template_name = 'locadora/form.html'
@@ -52,9 +62,9 @@ class Update_Fornecedor(LoginRequiredMixin, UpdateView):
         "titulo" : "Edição de Fornecedor",
         "botao" : "Salvar"
     }
+    add_group_required = ["Funcionário", "Administrador"]
     
-    
-class Delete_Fornecedor(LoginRequiredMixin, DeleteView):
+class Delete_Fornecedor(GroupRequiredMixin, DeleteView):
     model = Fornecedor
     template_name = 'locadora/form.html'
     success_url = reverse_lazy('listar_fornecedor')
@@ -62,9 +72,9 @@ class Delete_Fornecedor(LoginRequiredMixin, DeleteView):
         "titulo": "Excluir Fornecedor",
         "botao": "OBLITERAR"
     }
+    add_group_required = ["Administrador"]
     
-    
-class List_Fornecedor(LoginRequiredMixin, ListView):
+class List_Fornecedor(GroupRequiredMixin, ListView):
     model = Fornecedor
     template_name = 'locadora/form.html'
     extra_context = {
@@ -79,7 +89,7 @@ class List_Fornecedor(LoginRequiredMixin, ListView):
         return queryset
     
     
-class Detail_Fornecedor(LoginRequiredMixin, DetailView):
+class Detail_Fornecedor(GroupRequiredMixin, DetailView):
     model = Fornecedor
     template_name = 'locadora/form.html'
 
@@ -141,7 +151,7 @@ class Detail_Cliente(LoginRequiredMixin, DetailView):
 # VIEWS FILME
 
 
-class Create_Filme(LoginRequiredMixin, CreateView):
+class Create_Filme(GroupRequiredMixin, CreateView):
     model = Filme
     fields = [
         'classificacao',
@@ -163,8 +173,9 @@ class Create_Filme(LoginRequiredMixin, CreateView):
         url = super().form_valid(form)
 
         return url
+    add_group_required = ["Funcionário", "Administrador"]
 
-class Update_Filme(LoginRequiredMixin, UpdateView):
+class Update_Filme(GroupRequiredMixin, UpdateView):
     model = Filme
     fields = ['classificacao', 'titulo', 'duração', 'descricao', 'ano_lancamento', 'categoria', 'genero']
     template_name = 'locadora/form.html'
@@ -173,7 +184,7 @@ class Update_Filme(LoginRequiredMixin, UpdateView):
         "titulo": "Edição de Filme",
         "botao": "Salvar"
     }
-
+    add_group_required = ["Funcionário", "Administrador"]
 
 class Delete_Filme(LoginRequiredMixin, DeleteView):
     model = Filme
@@ -183,7 +194,7 @@ class Delete_Filme(LoginRequiredMixin, DeleteView):
         "titulo": "Excluir Filme",
         "botao": "OBLITERAR"
     }
-
+    add_group_required = ["Administrador"]
 
 class List_Filme(LoginRequiredMixin, ListView):
     model = Filme

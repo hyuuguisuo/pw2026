@@ -33,7 +33,11 @@
     <nav class="navbar navbar-dark bg-dark fixed-top">
         <div class="container">
             <a class="navbar-brand" href="#">LOCADOaaaaaaaaRA DE FILMES+</a>
-          
+            {% if request.user.is_authenticated %}
+                <span class="navbar-text text-white">
+                    Bem-vindo, {{ request.user.username }}!
+                </span>
+            {% endif %}
             <ul id="partesup" class="nav nav-pills justify-content-center py-2">
                 <li class="nav-item">
                     <a class="nav-link text-white active" href="{% url 'página_inicial' %}">Início</a>
