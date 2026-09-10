@@ -1,0 +1,91 @@
+{% extends "locadora/modelo.html" %}
+
+{% block title %}Locações | CINEMAIF{% endblock %}
+
+{% block content %}
+<div class="page-header-glass">
+    <div>
+        <h1 class="page-header-title">
+            <i class="bi bi-journal-bookmark text-warning"></i>
+            Controle de Locações
+            <span class="badge-count-gold ms-2">{{ object_list|length }}</span>
+        </h1>
+        <p class="text-secondary small m-0 mt-1">Acompanhe retiradas, prazos de devolução e pagamentos.</p>
+    </div>
+    <div>
+        <a href="{% url 'novo_locacao' %}" class="btn-primary-gold btn-primary-gold-sm">
+            <i class="bi bi-plus-lg"></i> Nova Locação
+        </a>
+    </div>
+</div>
+
+<div class="table-container-glass">
+    <div class="table-responsive">
+        <table class="table-glass">
+            <thead>
+                <tr>
+                    <th style="width: 80px;">ID</th>
+                    <th>Cliente</th>
+                    <th>Filme</th>
+                    <th>Data Locação</th>
+                    <th>Devolução Prevista</th>
+                    <th>Valor</th>
+                    <th>Pagamento</th>
+                    <th class="text-end" style="width: 170px;">Ações</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for locacao in object_list %}
+                <tr>
+                    <td class="text-secondary fw-semibold">#{{ locacao.id }}</td>
+                    <td class="fw-bold text-white">{{ locacao.cliente.nome }}</td>
+                    <td>
+                        <span class="text-info fw-semibold">{{ locacao.filme.titulo }}</span>
+                    </td>
+                    <td class="text-secondary small">{{ locacao.data_locacao|date:"d/m/Y H:i" }}</td>
+                    <td class="text-white small fw-semibold">{{ locacao.data_devolucao|date:"d/m/Y H:i" }}</td>
+                    <td>
+                        <span class="fw-bold text-warning">R$ {{ locacao.valor }}</span>
+                        {% if locacao.valor_pago >= locacao.valor %}
+                            <span class="badge-status-paid ms-1">Pago</span>
+                        {% else %}
+                            <span class="badge-status-pending ms-1">Pendente</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if locacao.metodo_pagamento %}
+                            <span class="badge-status-info">{{ locacao.get_metodo_pagamento_display }}</span>
+                        {% else %}
+                            <span class="text-secondary small">-</span>
+                        {% endif %}
+                    </td>
+                    <td class="text-end">
+                        <div class="btn-action-group">
+                            <a href="{% url 'editar_locacao' locacao.pk %}" class="btn-action-edit" title="Editar">
+                                <i class="bi bi-pencil-square"></i> Editar
+                            </a>
+                            <a href="{% url 'excluir_locacao' locacao.pk %}" class="btn-action-delete" title="Excluir">
+                                <i class="bi bi-trash3"></i>
+                            </a>
+                        </div>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="8" class="p-0">
+                        <div class="empty-state">
+                            <i class="bi bi-journal-x empty-state-icon"></i>
+                            <h3 class="empty-state-title">Nenhuma locação registrada</h3>
+                            <p class="empty-state-text">Realize o registro de locação para clientes ativos.</p>
+                            <a href="{% url 'novo_locacao' %}" class="btn-primary-gold btn-primary-gold-sm">
+                                <i class="bi bi-plus-lg"></i> Registrar Primeira Locação
+                            </a>
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

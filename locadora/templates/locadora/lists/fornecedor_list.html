@@ -1,0 +1,74 @@
+{% extends "locadora/modelo.html" %}
+
+{% block title %}Fornecedores | CINEMAIF{% endblock %}
+
+{% block content %}
+<div class="page-header-glass">
+    <div>
+        <h1 class="page-header-title">
+            <i class="bi bi-truck text-warning"></i>
+            Fornecedores e Distribuidores
+            <span class="badge-count-gold ms-2">{{ object_list|length }}</span>
+        </h1>
+        <p class="text-secondary small m-0 mt-1">Parceiros de distribuição de mídias e fitas da locadora.</p>
+    </div>
+    <div>
+        <a href="{% url 'novo_fornecedor' %}" class="btn-primary-gold btn-primary-gold-sm">
+            <i class="bi bi-plus-lg"></i> Novo Fornecedor
+        </a>
+    </div>
+</div>
+
+<div class="table-container-glass">
+    <div class="table-responsive">
+        <table class="table-glass">
+            <thead>
+                <tr>
+                    <th style="width: 80px;">ID</th>
+                    <th>Razão / Nome</th>
+                    <th>CNPJ</th>
+                    <th>Contato</th>
+                    <th>Endereço</th>
+                    <th>Tipo de Distribuição</th>
+                    <th class="text-end" style="width: 170px;">Ações</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for fornecedor in object_list %}
+                <tr>
+                    <td class="text-secondary fw-semibold">#{{ fornecedor.id }}</td>
+                    <td class="fw-bold text-white">{{ fornecedor.nome }}</td>
+                    <td class="text-secondary">{{ fornecedor.cnpj }}</td>
+                    <td class="text-secondary">{{ fornecedor.contato }}</td>
+                    <td class="text-secondary">{{ fornecedor.endereco }}</td>
+                    <td><span class="badge-status-info">{{ fornecedor.tipo_distribuicao }}</span></td>
+                    <td class="text-end">
+                        <div class="btn-action-group">
+                            <a href="{% url 'editar_fornecedor' fornecedor.pk %}" class="btn-action-edit" title="Editar">
+                                <i class="bi bi-pencil-square"></i> Editar
+                            </a>
+                            <a href="{% url 'excluir_fornecedor' fornecedor.pk %}" class="btn-action-delete" title="Excluir">
+                                <i class="bi bi-trash3"></i>
+                            </a>
+                        </div>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="7" class="p-0">
+                        <div class="empty-state">
+                            <i class="bi bi-truck empty-state-icon"></i>
+                            <h3 class="empty-state-title">Nenhum fornecedor cadastrado</h3>
+                            <p class="empty-state-text">Cadastre distribuidoras e produtoras parceiras.</p>
+                            <a href="{% url 'novo_fornecedor' %}" class="btn-primary-gold btn-primary-gold-sm">
+                                <i class="bi bi-plus-lg"></i> Cadastrar Primeiro Fornecedor
+                            </a>
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

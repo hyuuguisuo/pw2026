@@ -1,126 +1,684 @@
 {% extends "locadora/modelo.html" %}
 {% load static %}
 
-<!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+{% block title %}CINEMAIF — Plataforma de Streaming & Catálogo{% endblock %}
 
-<title>Template com Navbar + Topbar</title>
-
-<!-- Bootstrap CSS -->
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-{% block extra_css %}
-<style>
-
-
-/* barra de seções */
-.section-bar{
-  position:fixed;
-  top:56px;
-  width:100%;
-  z-index:1020;
-}
-
-</style>
-{% endblock extra_css %}
-
-</head>
-<body>
-
-{% block navbar %}
-    <nav class="navbar navbar-dark bg-dark fixed-top">
-        <div class="container">
-            <a class="navbar-brand" href="#">LOCADOaaaaaaaaRA DE FILMES+</a>
-            {% if request.user.is_authenticated %}
-                <span class="navbar-text text-white">
-                    Bem-vindo, {{ request.user.username }}!
-                </span>
-            {% endif %}
-            <ul id="partesup" class="nav nav-pills justify-content-center py-2">
-                <li class="nav-item">
-                    <a class="nav-link text-white active" href="{% url 'página_inicial' %}">Início</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link text-white" href="{% url 'listar_filme' %}">Filmes</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link text-white" href="{% url 'listar_cliente' %}">Clientes</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link text-white" href="{% url 'listar_fornecedor' %}">Fornecedores</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link text-white">Em Breve...</a>
-                </li>
-                {% if request.user.is_authenticated %}
-                    <li class="nav-item">
-                        <form action="{% url 'logout' %}" method="post">
-                            {% csrf_token %}
-                            <button class="nav-link text-white">Sair</a>
-                        </form>
-                        
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link text-white" href="{% url 'alterar_senha' %}">Alterar</a>
-                    </li>
-                {% else %}
-                    <li class="nav-item">
-                        <a class="nav-link text-white" href="{% url 'login' %}">Entrar<a>
-                    </li>
-                {% endif %}
-            </ul>
-            <!-- <form class="d-flex">
-                <input class="form-control me-2" type="search" placeholder="Buscar">
-                <button class="btn btn-outline-light">Buscar</button>
-            </form> -->
-        </div>
-    </nav>
-    {% endblock %}
+{% block container_class %}container-fluid px-lg-5 my-3{% endblock %}
 
 {% block content %}
-<!-- CONTEÚDO -->
-<div class="container">
+<!-- ========================================================================
+     HERO SPOTLIGHT BANNER (Cinematic Focus)
+     ======================================================================== -->
+<section class="hero-spotlight">
+    {% if featured_movie and featured_movie.poster_url %}
+        <img src="{{ featured_movie.poster_url }}" alt="{{ featured_movie.titulo }}" class="hero-backdrop">
+    {% else %}
+        <div class="hero-backdrop" style="background: radial-gradient(circle at 70% 30%, #174296 0%, #09132b 80%);"></div>
+    {% endif %}
+    
+    <div class="hero-overlay"></div>
 
-  <h1 class="mt-4">Página inicial</h1>
-  <p>Escolha uma seção na barra acima.</p>
-
-  <div class="row mt-4">
-
-    <div class="col-md-4">
-      <div class="card">
-        <div class="card-body">
-          <h5>Filme</h5>
-          <p>Conteúdo exemplo.</p>
+    <div class="hero-content">
+        <div class="hero-badge-row">
+            <span class="badge-resolution">4K ULTRA HD</span>
+            <span class="badge-resolution">IMAX ENHANCED</span>
+            {% if featured_movie %}
+                <span class="badge-classification badge-class-{{ featured_movie.classificacao }}">
+                    {{ featured_movie.get_classificacao_display }}
+                </span>
+                <span class="badge-category-navy">{{ featured_movie.categoria.nome }}</span>
+            {% else %}
+                <span class="badge-classification badge-class-A14">14 ANOS</span>
+            {% endif %}
         </div>
-      </div>
+
+        <h1 class="hero-title">
+            {% if featured_movie %}{{ featured_movie.titulo }}{% else %}CINEMA DE ALTO IMPACTO{% endif %}
+        </h1>
+
+        <div class="hero-meta">
+            {% if featured_movie %}
+                <span><i class="bi bi-calendar3 me-1 text-warning"></i> {{ featured_movie.ano_lancamento }}</span>
+                <span><i class="bi bi-clock me-1 text-warning"></i> {{ featured_movie.duração }}</span>
+                <span><i class="bi bi-film me-1 text-warning"></i> {{ featured_movie.genero.nome }}</span>
+            {% else %}
+                <span>2026</span>
+                <span>Catálogo Completo</span>
+                <span>Streaming & Locações</span>
+            {% endif %}
+        </div>
+
+        <p class="hero-synopsis">
+            {% if featured_movie and featured_movie.descricao %}
+                {{ featured_movie.descricao }}
+            {% else %}
+                Explore produções consagradas e lançamentos exclusivos com qualidade cinematográfica de ponta. Gerencie acervos, clientes e locações em uma experiência visual imersiva.
+            {% endif %}
+        </p>
+
+        <div class="hero-actions">
+            {% if featured_movie %}
+                <a href="{% url 'novo_locacao' %}?filme={{ featured_movie.id }}" class="btn-primary-gold">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                        <polygon points="5 3 19 12 5 21 5 3"></polygon>
+                    </svg>
+                    <span>ALUGAR AGORA</span>
+                </a>
+                <button type="button" class="btn-secondary-glass" onclick="openMovieModal({{ featured_movie.id }})">
+                    <i class="bi bi-info-circle fs-5"></i>
+                    <span>VER DETALHES</span>
+                </button>
+            {% else %}
+                <a href="{% url 'novo_filme' %}" class="btn-primary-gold">
+                    <i class="bi bi-plus-lg fs-5"></i>
+                    <span>CADASTRAR PRIMEIRO FILME</span>
+                </a>
+            {% endif %}
+        </div>
+    </div>
+</section>
+
+<!-- ========================================================================
+     BRAND / CATEGORY GLASS TILES (Disney+ Style Category Cards)
+     ======================================================================== -->
+<section class="category-tiles-bar">
+    <a href="{% url 'listar_filme' %}" class="category-glass-tile">
+        <div class="category-tile-icon">
+            <i class="bi bi-camera-reels"></i>
+        </div>
+        <span class="category-tile-name">Todos os Filmes</span>
+    </a>
+
+    <a href="{% url 'novo_locacao' %}" class="category-glass-tile">
+        <div class="category-tile-icon">
+            <i class="bi bi-play-circle"></i>
+        </div>
+        <span class="category-tile-name">Nova Locação</span>
+    </a>
+
+    <a href="{% url 'listar_categoria' %}" class="category-glass-tile">
+        <div class="category-tile-icon">
+            <i class="bi bi-tags"></i>
+        </div>
+        <span class="category-tile-name">Categorias</span>
+    </a>
+
+    <a href="{% url 'listar_genero' %}" class="category-glass-tile">
+        <div class="category-tile-icon">
+            <i class="bi bi-bookmark-heart"></i>
+        </div>
+        <span class="category-tile-name">Gêneros</span>
+    </a>
+
+    <a href="{% url 'listar_cliente' %}" class="category-glass-tile">
+        <div class="category-tile-icon">
+            <i class="bi bi-people"></i>
+        </div>
+        <span class="category-tile-name">Clientes</span>
+    </a>
+
+    <a href="{% url 'listar_fornecedor' %}" class="category-glass-tile">
+        <div class="category-tile-icon">
+            <i class="bi bi-truck"></i>
+        </div>
+        <span class="category-tile-name">Fornecedores</span>
+    </a>
+</section>
+
+<!-- ========================================================================
+     EXPLORADOR INTERATIVO & FILTRO POR GÊNERO (UX & Conforto de Uso)
+     ======================================================================== -->
+<section class="catalog-finder-panel">
+    <div class="catalog-search-wrapper">
+        <i class="bi bi-search catalog-search-icon"></i>
+        <input type="text" id="catalogSearchInput" class="catalog-search-input" 
+               placeholder="Buscar filmes por título, gênero, ano ou classificação em tempo real..." 
+               autocomplete="off" aria-label="Pesquisa rápida no catálogo">
+        <button type="button" id="catalogSearchClear" class="catalog-search-clear" aria-label="Limpar pesquisa">
+            <i class="bi bi-x-circle-fill"></i>
+        </button>
     </div>
 
-    <div class="col-md-4">
-      <div class="card">
-        <div class="card-body">
-          <h5>Série</h5>
-          <p>Conteúdo exemplo.</p>
-        </div>
-      </div>
+    <div class="catalog-genre-pills">
+        <button type="button" class="genre-pill-btn active" data-genre="todos">
+            <i class="bi bi-grid-fill"></i> Todos ({{ total_filmes }})
+        </button>
+        {% for genero in generos %}
+            <button type="button" class="genre-pill-btn" data-genre="{{ genero.nome|lower }}">
+                {{ genero.nome }} <span class="badge bg-secondary rounded-pill ms-1" style="font-size: 0.65rem;">{{ genero.filme_set.count }}</span>
+            </button>
+        {% endfor %}
     </div>
+</section>
 
-    <div class="col-md-4">
-      <div class="card">
-        <div class="card-body">
-          <h5>TV</h5>
-          <p>Conteúdo exemplo.</p>
-        </div>
-      </div>
+<!-- ========================================================================
+     RESULTADOS DA PESQUISA EM TEMPO REAL (Visível apenas ao buscar/filtrar)
+     ======================================================================== -->
+<section id="liveResultsSection" class="live-results-section d-none">
+    <div class="d-flex align-items-center justify-content-between mb-3">
+        <h2 class="carousel-title" id="liveResultsTitle">
+            <i class="bi bi-funnel text-warning me-2"></i> Títulos Localizados
+        </h2>
+        <span id="liveResultsCount" class="badge-count-gold">0</span>
     </div>
+    <div id="liveResultsGrid" class="live-results-grid"></div>
+</section>
 
-  </div>
+<!-- ========================================================================
+     VITRINE DE CARROSSÉIS PRINCIPAL
+     ======================================================================== -->
+<div id="catalogCarouselsWrapper">
+    <!-- CARROSSEL 1: RECÉM-ADICIONADOS -->
+    <section class="carousel-section">
+        <div class="carousel-header">
+            <h2 class="carousel-title">Recém-Adicionados ao Catálogo</h2>
+            <a href="{% url 'listar_filme' %}" class="text-secondary small fw-semibold text-uppercase">
+                Ver Todos <i class="bi bi-chevron-right"></i>
+            </a>
+        </div>
 
+        <div class="carousel-track-wrapper">
+            <button type="button" class="carousel-nav-btn carousel-nav-prev" onclick="scrollCarousel('recentTrack', -600)" aria-label="Anterior">
+                <i class="bi bi-chevron-left fs-4"></i>
+            </button>
+
+            <div class="carousel-track" id="recentTrack">
+                {% for filme in recent_movies %}
+                    <div class="movie-card" onclick="openMovieModal({{ filme.pk }})" role="button" tabindex="0" title="{{ filme.titulo }} — Clique para detalhes e aluguel">
+                        {% if filme.poster_url %}
+                            <img src="{{ filme.poster_url }}" alt="{{ filme.titulo }}" class="movie-card-poster" loading="lazy">
+                        {% else %}
+                            <div class="movie-card-placeholder">
+                                <i class="bi bi-film fs-1 text-warning"></i>
+                                <span class="small fw-semibold">{{ filme.titulo }}</span>
+                            </div>
+                        {% endif %}
+
+                        <div class="movie-card-overlay">
+                            <span class="badge-classification badge-class-{{ filme.classificacao }} align-self-start mb-1">
+                                {{ filme.get_classificacao_display }}
+                            </span>
+                            <div class="movie-card-title text-truncate">{{ filme.titulo }}</div>
+                            <div class="movie-card-meta">
+                                <span>{{ filme.ano_lancamento }}</span>
+                                <span>&bull;</span>
+                                <span>{{ filme.genero.nome }}</span>
+                            </div>
+                        </div>
+                    </div>
+                {% empty %}
+                    <div class="text-muted small py-4 px-3">
+                        Nenhum filme cadastrado no catálogo. <a href="{% url 'novo_filme' %}" class="text-warning">Cadastrar filme</a>.
+                    </div>
+                {% endfor %}
+            </div>
+
+            <button type="button" class="carousel-nav-btn carousel-nav-next" onclick="scrollCarousel('recentTrack', 600)" aria-label="Próximo">
+                <i class="bi bi-chevron-right fs-4"></i>
+            </button>
+        </div>
+    </section>
+
+    <!-- CARROSSÉIS POR GÊNERO -->
+    {% for genero in generos %}
+        <section class="carousel-section">
+            <div class="carousel-header">
+                <h2 class="carousel-title">
+                    <i class="bi bi-bookmark-star text-warning"></i> {{ genero.nome }}
+                </h2>
+                <span class="badge-genre-gold">
+                    {{ genero.filme_set.count }} títulos
+                </span>
+            </div>
+
+            <div class="carousel-track-wrapper">
+                <button type="button" class="carousel-nav-btn carousel-nav-prev" onclick="scrollCarousel('genTrack{{ genero.id }}', -600)" aria-label="Anterior">
+                    <i class="bi bi-chevron-left fs-4"></i>
+                </button>
+
+                <div class="carousel-track" id="genTrack{{ genero.id }}">
+                    {% for filme in genero.filme_set.all %}
+                        <div class="movie-card" onclick="openMovieModal({{ filme.pk }})" role="button" tabindex="0" title="{{ filme.titulo }} — Clique para detalhes e aluguel">
+                            {% if filme.poster_url %}
+                                <img src="{{ filme.poster_url }}" alt="{{ filme.titulo }}" class="movie-card-poster" loading="lazy">
+                            {% else %}
+                                <div class="movie-card-placeholder">
+                                    <i class="bi bi-film fs-1 text-warning"></i>
+                                    <span class="small fw-semibold">{{ filme.titulo }}</span>
+                                </div>
+                            {% endif %}
+
+                            <div class="movie-card-overlay">
+                                <span class="badge-classification badge-class-{{ filme.classificacao }} align-self-start mb-1">
+                                    {{ filme.get_classificacao_display }}
+                                </span>
+                                <div class="movie-card-title text-truncate">{{ filme.titulo }}</div>
+                                <div class="movie-card-meta">
+                                    <span>{{ filme.ano_lancamento }}</span>
+                                    <span>&bull;</span>
+                                    <span>{{ filme.categoria.nome }}</span>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+
+                <button type="button" class="carousel-nav-btn carousel-nav-next" onclick="scrollCarousel('genTrack{{ genero.id }}', 600)" aria-label="Próximo">
+                    <i class="bi bi-chevron-right fs-4"></i>
+                </button>
+            </div>
+        </section>
+    {% endfor %}
+
+    <!-- CARROSSÉIS POR CATEGORIA DE PREÇO & PRAZO -->
+    {% for categoria in categories %}
+        <section class="carousel-section">
+            <div class="carousel-header">
+                <h2 class="carousel-title">
+                    <i class="bi bi-tag text-warning"></i> {{ categoria.nome }}
+                </h2>
+                <span class="badge-category-navy">
+                    <i class="bi bi-clock me-1"></i>Devolução em {{ categoria.prazo_devolucao }} dias &bull; R$ {{ categoria.preco }}
+                </span>
+            </div>
+
+            <div class="carousel-track-wrapper">
+                <button type="button" class="carousel-nav-btn carousel-nav-prev" onclick="scrollCarousel('catTrack{{ categoria.id }}', -600)" aria-label="Anterior">
+                    <i class="bi bi-chevron-left fs-4"></i>
+                </button>
+
+                <div class="carousel-track" id="catTrack{{ categoria.id }}">
+                    {% for filme in categoria.filme_set.all %}
+                        <div class="movie-card" onclick="openMovieModal({{ filme.pk }})" role="button" tabindex="0" title="{{ filme.titulo }} — Clique para detalhes e aluguel">
+                            {% if filme.poster_url %}
+                                <img src="{{ filme.poster_url }}" alt="{{ filme.titulo }}" class="movie-card-poster" loading="lazy">
+                            {% else %}
+                                <div class="movie-card-placeholder">
+                                    <i class="bi bi-film fs-1 text-warning"></i>
+                                    <span class="small fw-semibold">{{ filme.titulo }}</span>
+                                </div>
+                            {% endif %}
+
+                            <div class="movie-card-overlay">
+                                <span class="badge-classification badge-class-{{ filme.classificacao }} align-self-start mb-1">
+                                    {{ filme.get_classificacao_display }}
+                                </span>
+                                <div class="movie-card-title text-truncate">{{ filme.titulo }}</div>
+                                <div class="movie-card-meta">
+                                    <span>{{ filme.ano_lancamento }}</span>
+                                    <span>&bull;</span>
+                                    <span>{{ filme.genero.nome }}</span>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+
+                <button type="button" class="carousel-nav-btn carousel-nav-next" onclick="scrollCarousel('catTrack{{ categoria.id }}', 600)" aria-label="Próximo">
+                    <i class="bi bi-chevron-right fs-4"></i>
+                </button>
+            </div>
+        </section>
+    {% endfor %}
 </div>
-{% endblock %}
-<!-- Bootstrap JS -->
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
-</body>
-</html>
+<!-- ========================================================================
+     PAINEL DE GESTÃO DO SISTEMA (Acesso rápido para administração)
+     ======================================================================== -->
+<section class="glass-panel my-5">
+    <div class="d-flex align-items-center justify-content-between mb-4 flex-wrap gap-2">
+        <div>
+            <h3 class="m-0 text-white font-weight-bold">
+                <i class="bi bi-sliders text-warning me-2"></i> Painel de Operações da Locadora
+            </h3>
+            <p class="text-secondary small m-0 mt-1">Acesso direto aos formulários de cadastro e controle de estoque.</p>
+        </div>
+        <div class="d-flex align-items-center gap-3 flex-wrap">
+            <span class="badge-stat-card">
+                <i class="bi bi-film text-warning"></i> Filmes: <strong>{{ total_filmes|default:0 }}</strong>
+            </span>
+            <span class="badge-stat-card">
+                <i class="bi bi-people text-info"></i> Clientes: <strong>{{ total_clientes|default:0 }}</strong>
+            </span>
+            <span class="badge-stat-card">
+                <i class="bi bi-journal-bookmark text-success"></i> Locações: <strong>{{ total_locacoes|default:0 }}</strong>
+            </span>
+        </div>
+    </div>
+
+    <div class="row g-3">
+        <div class="col-md-3">
+            <a href="{% url 'novo_filme' %}" class="quick-action-card">
+                <i class="bi bi-camera-reels text-warning fs-3"></i>
+                <div>
+                    <div class="quick-action-title">Novo Filme</div>
+                    <div class="quick-action-subtitle">Adicionar título e capa</div>
+                </div>
+            </a>
+        </div>
+        <div class="col-md-3">
+            <a href="{% url 'novo_cliente' %}" class="quick-action-card">
+                <i class="bi bi-person-plus text-info fs-3"></i>
+                <div>
+                    <div class="quick-action-title">Novo Cliente</div>
+                    <div class="quick-action-subtitle">Cadastro de cliente</div>
+                </div>
+            </a>
+        </div>
+        <div class="col-md-3">
+            <a href="{% url 'novo_categoria' %}" class="quick-action-card">
+                <i class="bi bi-tag text-success fs-3"></i>
+                <div>
+                    <div class="quick-action-title">Nova Categoria</div>
+                    <div class="quick-action-subtitle">Prazos e precificação</div>
+                </div>
+            </a>
+        </div>
+        <div class="col-md-3">
+            <a href="{% url 'novo_fornecedor' %}" class="quick-action-card">
+                <i class="bi bi-truck text-danger fs-3"></i>
+                <div>
+                    <div class="quick-action-title">Novo Fornecedor</div>
+                    <div class="quick-action-subtitle">Parceiro distribuidor</div>
+                </div>
+            </a>
+        </div>
+    </div>
+</section>
+
+<!-- ========================================================================
+     MODAL CINEMATOGRÁFICO DE DETALHES DO FILME (UX & Acessibilidade)
+     ======================================================================== -->
+<div id="movieDetailModal" class="movie-modal-backdrop" role="dialog" aria-modal="true" aria-hidden="true">
+    <div class="movie-modal-dialog">
+        <button type="button" class="movie-modal-close-btn" onclick="closeMovieModal()" aria-label="Fechar janela de detalhes">
+            <i class="bi bi-x-lg"></i>
+        </button>
+
+        <div class="movie-modal-body">
+            <div class="movie-modal-poster-col">
+                <img id="modalPosterImg" src="" alt="Poster do filme" class="movie-modal-poster-img">
+            </div>
+            <div class="movie-modal-info-col">
+                <div>
+                    <div class="d-flex align-items-center gap-2 mb-2 flex-wrap">
+                        <span id="modalClassBadge" class="badge-classification">L</span>
+                        <span id="modalGenreBadge" class="badge-genre-gold">Ação</span>
+                        <span id="modalCategoryBadge" class="badge-category-navy">Lançamento</span>
+                        <span class="badge-resolution">4K ULTRA HD</span>
+                    </div>
+
+                    <h2 id="modalTitle" class="movie-modal-title">Título do Filme</h2>
+
+                    <div class="d-flex align-items-center gap-3 text-secondary small mb-3">
+                        <span id="modalYear"><i class="bi bi-calendar3 me-1 text-warning"></i> 2024</span>
+                        <span>&bull;</span>
+                        <span id="modalDuration"><i class="bi bi-clock me-1 text-warning"></i> 02:00:00</span>
+                    </div>
+
+                    <p id="modalSynopsis" class="movie-modal-synopsis">Sinopse do filme carregada dinamicamente...</p>
+
+                    <div class="movie-modal-pricing-box">
+                        <div>
+                            <span class="text-secondary small d-block">Valor da Locação:</span>
+                            <strong id="modalPrice" class="fs-5 text-warning">R$ 14.90</strong>
+                        </div>
+                        <div class="text-end">
+                            <span class="text-secondary small d-block">Prazo de Devolução:</span>
+                            <span id="modalDeadline" class="badge-status-info">2 dias</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="d-flex align-items-center gap-3 flex-wrap mt-2">
+                    <a id="modalAlugarLink" href="#" class="btn-primary-gold flex-grow-1 text-center justify-content-center">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                            <polygon points="5 3 19 12 5 21 5 3"></polygon>
+                        </svg>
+                        <span>ALUGAR ESTE FILME</span>
+                    </a>
+                    <a id="modalEditarLink" href="#" class="btn-secondary-glass">
+                        <i class="bi bi-pencil-square"></i>
+                        <span>Editar</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Dados JSON dos filmes para suporte a busca em tempo real e modal instantâneo -->
+{{ movies_json|json_script:"catalogMoviesData" }}
+{% endblock %}
+
+{% block extra_js %}
+<script>
+// =============================================================================
+// CAROUSEL SMOOTH NAVIGATION & MOUSE WHEEL
+// =============================================================================
+function scrollCarousel(trackId, distance) {
+    const track = document.getElementById(trackId);
+    if (track) {
+        track.scrollBy({ left: distance, behavior: 'smooth' });
+    }
+}
+
+// Suporte a rolagem horizontal via roda do mouse nos carrosséis
+document.addEventListener('DOMContentLoaded', function () {
+    const tracks = document.querySelectorAll('.carousel-track');
+    tracks.forEach(track => {
+        track.addEventListener('wheel', function (e) {
+            if (e.deltaY !== 0) {
+                e.preventDefault();
+                track.scrollBy({ left: e.deltaY * 2, behavior: 'smooth' });
+            }
+        }, { passive: false });
+    });
+});
+
+// =============================================================================
+// INTERACTIVE CATALOG SEARCH & GENRE FILTERING (UX / BEM-ESTAR)
+// =============================================================================
+let allCatalogMovies = [];
+try {
+    const dataScript = document.getElementById('catalogMoviesData');
+    if (dataScript) {
+        allCatalogMovies = JSON.parse(dataScript.textContent);
+    }
+} catch (e) {
+    console.error('Erro ao ler catálogo de filmes:', e);
+}
+
+const searchInput = document.getElementById('catalogSearchInput');
+const searchClearBtn = document.getElementById('catalogSearchClear');
+const genreButtons = document.querySelectorAll('.genre-pill-btn');
+const liveSection = document.getElementById('liveResultsSection');
+const liveGrid = document.getElementById('liveResultsGrid');
+const liveCount = document.getElementById('liveResultsCount');
+const liveTitle = document.getElementById('liveResultsTitle');
+const carouselsWrapper = document.getElementById('catalogCarouselsWrapper');
+
+let selectedGenre = 'todos';
+
+function applyFilter() {
+    const query = searchInput ? searchInput.value.trim().toLowerCase() : '';
+
+    if (searchClearBtn) {
+        if (query.length > 0) {
+            searchClearBtn.classList.add('active');
+        } else {
+            searchClearBtn.classList.remove('active');
+        }
+    }
+
+    // Se nenhum filtro estiver ativo, volta aos carrosséis padrão
+    if (!query && selectedGenre === 'todos') {
+        liveSection.classList.add('d-none');
+        carouselsWrapper.classList.remove('d-none');
+        return;
+    }
+
+    // Filtrar filmes
+    const filtered = allCatalogMovies.filter(filme => {
+        const matchesGenre = (selectedGenre === 'todos') || (filme.genero.toLowerCase() === selectedGenre);
+        const matchesQuery = !query || 
+            filme.titulo.toLowerCase().includes(query) ||
+            filme.genero.toLowerCase().includes(query) ||
+            filme.categoria.toLowerCase().includes(query) ||
+            String(filme.ano).includes(query) ||
+            filme.classificacao.toLowerCase().includes(query);
+
+        return matchesGenre && matchesQuery;
+    });
+
+    // Exibir resultados em grid
+    liveSection.classList.remove('d-none');
+    carouselsWrapper.classList.add('d-none');
+
+    liveCount.textContent = filtered.length;
+    if (query && selectedGenre !== 'todos') {
+        liveTitle.innerHTML = `<i class="bi bi-funnel text-warning me-2"></i> "${query}" em ${selectedGenre.toUpperCase()}`;
+    } else if (query) {
+        liveTitle.innerHTML = `<i class="bi bi-search text-warning me-2"></i> Resultados para "${query}"`;
+    } else {
+        liveTitle.innerHTML = `<i class="bi bi-grid-fill text-warning me-2"></i> Gênero: ${selectedGenre.toUpperCase()}`;
+    }
+
+    if (filtered.length === 0) {
+        liveGrid.innerHTML = `
+            <div class="col-12 text-center py-5">
+                <i class="bi bi-camera-reels fs-1 text-secondary opacity-50 d-block mb-3"></i>
+                <h4 class="text-white font-weight-bold">Nenhum título localizado</h4>
+                <p class="text-secondary small">Tente outros termos de busca ou selecione outro gênero.</p>
+                <button type="button" class="btn-secondary-glass btn-sm mt-2" onclick="resetFilters()">
+                    <i class="bi bi-arrow-counterclockwise"></i> Ver Catálogo Completo
+                </button>
+            </div>
+        `;
+        return;
+    }
+
+    liveGrid.innerHTML = filtered.map(filme => `
+        <div class="movie-card w-100" onclick="openMovieModal(${filme.id})" role="button" tabindex="0" title="${filme.titulo}">
+            ${filme.poster ? `
+                <img src="${filme.poster}" alt="${filme.titulo}" class="movie-card-poster" loading="lazy">
+            ` : `
+                <div class="movie-card-placeholder">
+                    <i class="bi bi-film fs-2 text-warning"></i>
+                    <span class="small fw-semibold mt-2">${filme.titulo}</span>
+                </div>
+            `}
+            <div class="movie-card-overlay">
+                <span class="badge-classification badge-class-${filme.classificacao} align-self-start mb-1">
+                    ${filme.classificacao_display || filme.classificacao}
+                </span>
+                <div class="movie-card-title text-truncate">${filme.titulo}</div>
+                <div class="movie-card-meta">
+                    <span>${filme.ano}</span>
+                    <span>&bull;</span>
+                    <span>${filme.genero}</span>
+                </div>
+            </div>
+        </div>
+    `).join('');
+}
+
+function resetFilters() {
+    if (searchInput) searchInput.value = '';
+    selectedGenre = 'todos';
+    genreButtons.forEach(btn => {
+        btn.classList.toggle('active', btn.getAttribute('data-genre') === 'todos');
+    });
+    applyFilter();
+}
+
+if (searchInput) {
+    searchInput.addEventListener('input', applyFilter);
+}
+
+if (searchClearBtn) {
+    searchClearBtn.addEventListener('click', function () {
+        searchInput.value = '';
+        searchInput.focus();
+        applyFilter();
+    });
+}
+
+genreButtons.forEach(btn => {
+    btn.addEventListener('click', function () {
+        genreButtons.forEach(b => b.classList.remove('active'));
+        this.classList.add('active');
+        selectedGenre = this.getAttribute('data-genre');
+        applyFilter();
+    });
+});
+
+// =============================================================================
+// MOVIE QUICK-VIEW MODAL (UX & ACCESSIBILITY)
+// =============================================================================
+const modal = document.getElementById('movieDetailModal');
+const modalPoster = document.getElementById('modalPosterImg');
+const modalClass = document.getElementById('modalClassBadge');
+const modalGenre = document.getElementById('modalGenreBadge');
+const modalCategory = document.getElementById('modalCategoryBadge');
+const modalTitle = document.getElementById('modalTitle');
+const modalYear = document.getElementById('modalYear');
+const modalDuration = document.getElementById('modalDuration');
+const modalSynopsis = document.getElementById('modalSynopsis');
+const modalPrice = document.getElementById('modalPrice');
+const modalDeadline = document.getElementById('modalDeadline');
+const modalAlugarLink = document.getElementById('modalAlugarLink');
+const modalEditarLink = document.getElementById('modalEditarLink');
+
+function openMovieModal(filmeId) {
+    const filme = allCatalogMovies.find(f => f.id === filmeId);
+    if (!filme) return;
+
+    modalPoster.src = filme.poster || '';
+    modalPoster.alt = 'Poster de ' + filme.titulo;
+
+    modalClass.className = 'badge-classification badge-class-' + filme.classificacao;
+    modalClass.textContent = filme.classificacao_display || filme.classificacao;
+
+    modalGenre.textContent = filme.genero;
+    modalCategory.textContent = filme.categoria;
+    modalTitle.textContent = filme.titulo;
+    modalYear.innerHTML = `<i class="bi bi-calendar3 me-1 text-warning"></i> ${filme.ano}`;
+    modalDuration.innerHTML = `<i class="bi bi-clock me-1 text-warning"></i> ${filme.duracao}`;
+    modalSynopsis.textContent = filme.descricao || 'Nenhuma descrição técnica informada.';
+
+    modalPrice.textContent = 'R$ ' + filme.preco;
+    modalDeadline.innerHTML = `<i class="bi bi-clock me-1"></i> ${filme.prazo} dias de locação`;
+
+    modalAlugarLink.href = filme.alugar_url;
+    modalEditarLink.href = filme.editar_url;
+
+    modal.classList.add('active');
+    modal.setAttribute('aria-hidden', 'false');
+    document.body.style.overflow = 'hidden'; // trava scroll do fundo
+}
+
+function closeMovieModal() {
+    if (modal) {
+        modal.classList.remove('active');
+        modal.setAttribute('aria-hidden', 'true');
+        document.body.style.overflow = ''; // libera scroll
+    }
+}
+
+// Fechar com ESC ou clique fora do diálogo
+document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape' && modal && modal.classList.contains('active')) {
+        closeMovieModal();
+    }
+});
+
+if (modal) {
+    modal.addEventListener('click', function (e) {
+        if (e.target === modal) {
+            closeMovieModal();
+        }
+    });
+}
+</script>
+{% endblock %}

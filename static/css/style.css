@@ -1,3 +1,1363 @@
+/* ==========================================================================
+   CINEMAIF — Disney+ Inspired Theme
+   Focus: High Visual Clarity, Accessibility, Rich Navy Blue & Warm Gold Accents
+   No AI-neon glows, no low-contrast text, natural and polished streaming feel.
+   ========================================================================== */
+
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap');
+
+:root {
+  /* Canvas & Surfaces (Inspired by Royal Cobalt #1247b3 — rich, present, authentic streaming blue) */
+  --bg-canvas:             #09132b;  /* Deep royal canvas (noticeably blue, elegant and cinematic) */
+  --bg-surface-primary:    #0e204a;  /* Primary card / panel surface */
+  --bg-surface-secondary:  #132a61;  /* Secondary surface / table rows / inner boxes */
+  --bg-surface-tertiary:   #19367d;  /* Hover / elevated surface */
+  --bg-nav:                rgba(9, 19, 43, 0.94);
+  
+  /* Royal Cobalt / Navy Spectrum (Rooted in the #1247b3 tonal lineage) */
+  --navy-950:              #050b18;  /* Deepest midnight */
+  --navy-900:              #09132b;  /* Canvas blue */
+  --navy-800:              #0e204a;  /* Panel surface */
+  --navy-700:              #132a61;  /* Secondary surface */
+  --navy-600:              #19367d;  /* Elevated chip / sub-card */
+  --navy-500:              #20449c;  /* Active border / accent element */
+  --navy-400:              #2955c4;  /* Muted cobalt highlight */
+  --navy-300:              #4373e6;  /* Soft sky-blue text */
+  --blue-royal:            #1247b3;  /* Reference royal cobalt blue */
+
+  /* Primary Highlight: Warm Cinema Gold (Complementary contrast to Royal Blue) */
+  --accent-gold:           #f59e0b;
+  --accent-gold-hover:     #d97706;
+  --accent-gold-light:     #fef3c7;
+  --accent-gold-text:      #060e22;  /* High contrast text on gold */
+
+  /* Supporting Blue Accents (Natural royal tones) */
+  --accent-blue:           #1b56d6;
+  --accent-blue-hover:     #2563eb;
+  --accent-blue-subtle:    rgba(18, 71, 179, 0.22);
+
+  /* Typography & High-Contrast Colors (WCAG AA / AAA Compliant) */
+  --text-primary:          #ffffff;  /* High contrast crisp white */
+  --text-secondary:        #cbd5e1;  /* Light slate, highly legible */
+  --text-muted:            #94a3b8;  /* Clear readable subtitle */
+  
+  /* Borders (Subtle royal blue tints instead of dead gray) */
+  --border-subtle:         rgba(41, 85, 196, 0.30);
+  --border-medium:         rgba(67, 115, 230, 0.45);
+  --border-focus:          #f59e0b;  /* Warm gold focus */
+
+  /* Soft Realistic Shadows (Disney+ style: smooth drop shadows, no radioactive neons) */
+  --shadow-sm:             0 2px 8px rgba(0, 0, 0, 0.38);
+  --shadow-md:             0 6px 20px rgba(0, 0, 0, 0.48);
+  --shadow-lg:             0 14px 32px rgba(0, 0, 0, 0.58);
+}
+
+/* ==========================================================================
+   Base & Resets
+   ========================================================================== */
 * {
-    font-family:'Times New Roman', Times, serif
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+  background-color: var(--bg-canvas);
+}
+
+body {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  margin: 0;
+  background-color: var(--bg-canvas);
+  background-image: radial-gradient(circle at 50% -10%, #15387a 0%, #09132b 55%, #050b18 100%);
+  background-attachment: fixed;
+  color: var(--text-primary);
+  font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  font-size: 0.95rem;
+  line-height: 1.6;
+  padding-top: 76px;
+  -webkit-font-smoothing: antialiased;
+}
+
+main {
+  flex: 1;
+}
+
+a {
+  color: #93c5fd;
+  text-decoration: none;
+  transition: color 0.15s ease;
+}
+
+a:hover {
+  color: var(--accent-gold);
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Outfit', 'Plus Jakarta Sans', sans-serif;
+  font-weight: 700;
+  color: var(--text-primary);
+  letter-spacing: -0.01em;
+}
+
+/* ==========================================================================
+   Disney+ Style Frosted Navbar
+   ========================================================================== */
+.navbar-cinemaif {
+  background-color: var(--bg-nav) !important;
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-bottom: 1px solid var(--border-subtle);
+  min-height: 74px;
+  padding: 0.65rem 0;
+  z-index: 1040;
+}
+
+.navbar-brand-cinemaif {
+  font-family: 'Outfit', sans-serif;
+  font-size: 1.45rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  color: #ffffff !important;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  text-decoration: none;
+}
+
+.navbar-brand-cinemaif .brand-accent {
+  color: var(--accent-gold);
+  font-weight: 900;
+}
+
+.nav-link-cinemaif {
+  color: var(--text-secondary) !important;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-weight: 600;
+  font-size: 0.88rem;
+  letter-spacing: 0.03em;
+  padding: 0.5rem 0.85rem !important;
+  border-radius: 6px;
+  transition: all 0.15s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.nav-link-cinemaif:hover {
+  color: #ffffff !important;
+  background-color: rgba(255, 255, 255, 0.08);
+}
+
+.nav-link-cinemaif.active {
+  color: var(--accent-gold) !important;
+  background-color: rgba(245, 158, 11, 0.12);
+  position: relative;
+}
+
+.nav-link-cinemaif.active::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 15%;
+  width: 70%;
+  height: 2px;
+  background-color: var(--accent-gold);
+  border-radius: 2px;
+}
+
+/* User Menu & Dropdown */
+.dropdown-menu-cinemaif {
+  background-color: var(--bg-surface-secondary);
+  border: 1px solid var(--border-medium);
+  border-radius: 10px;
+  box-shadow: var(--shadow-lg);
+  padding: 0.5rem;
+}
+
+.dropdown-menu-cinemaif .dropdown-item {
+  color: var(--text-secondary);
+  font-size: 0.88rem;
+  font-weight: 500;
+  border-radius: 6px;
+  padding: 0.55rem 0.9rem;
+  transition: all 0.15s ease;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.dropdown-menu-cinemaif .dropdown-item:hover {
+  background-color: rgba(59, 130, 246, 0.2);
+  color: #ffffff;
+}
+
+.dropdown-menu-cinemaif .dropdown-divider {
+  border-top: 1px solid var(--border-subtle);
+  margin: 0.4rem 0;
+}
+
+.user-profile-badge {
+  background: var(--bg-surface-secondary);
+  border: 1px solid var(--border-medium);
+  border-radius: 9999px;
+  padding: 0.4rem 0.95rem;
+  color: var(--text-primary);
+  font-size: 0.85rem;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  transition: all 0.15s ease;
+}
+
+.user-profile-badge:hover {
+  border-color: var(--accent-gold);
+  background: var(--bg-surface-tertiary);
+}
+
+/* ==========================================================================
+   Buttons (Natural, High-Contrast & Accessible)
+   ========================================================================== */
+.btn-primary-gold {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+  background-color: var(--accent-gold);
+  color: var(--accent-gold-text) !important;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-weight: 800;
+  font-size: 0.88rem;
+  letter-spacing: 0.03em;
+  padding: 0.75rem 1.6rem;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(245, 158, 11, 0.3);
+  transition: all 0.2s ease;
+  text-decoration: none;
+}
+
+.btn-primary-gold:hover {
+  background-color: var(--accent-gold-hover);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(245, 158, 11, 0.4);
+  color: var(--accent-gold-text) !important;
+}
+
+.btn-primary-gold-sm {
+  padding: 0.45rem 1rem;
+  font-size: 0.82rem;
+  border-radius: 5px;
+}
+
+.btn-secondary-glass {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+  background-color: rgba(255, 255, 255, 0.1);
+  color: #ffffff !important;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-weight: 600;
+  font-size: 0.88rem;
+  padding: 0.75rem 1.6rem;
+  border-radius: 6px;
+  border: 1px solid var(--border-medium);
+  backdrop-filter: blur(10px);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-decoration: none;
+}
+
+.btn-secondary-glass:hover {
+  background-color: rgba(255, 255, 255, 0.2);
+  border-color: #ffffff;
+  transform: translateY(-2px);
+  color: #ffffff !important;
+}
+
+/* ==========================================================================
+   Hero Spotlight Banner (Disney+ Cinema Ambience)
+   ========================================================================== */
+.hero-spotlight {
+  position: relative;
+  min-height: 460px;
+  border-radius: 14px;
+  overflow: hidden;
+  margin-bottom: 2.5rem;
+  background-color: var(--bg-surface-primary);
+  border: 1px solid var(--border-subtle);
+  box-shadow: var(--shadow-lg);
+  display: flex;
+  align-items: flex-end;
+}
+
+.hero-backdrop {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 25%;
+  z-index: 1;
+}
+
+.hero-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(9, 19, 43, 0.1) 0%, rgba(9, 19, 43, 0.75) 55%, var(--bg-canvas) 100%),
+              linear-gradient(90deg, var(--bg-canvas) 0%, rgba(9, 19, 43, 0.88) 45%, transparent 100%);
+  z-index: 2;
+}
+
+.hero-content {
+  position: relative;
+  z-index: 3;
+  padding: 2.75rem 2.5rem;
+  max-width: 680px;
+}
+
+.hero-badge-row {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.hero-title {
+  font-family: 'Outfit', sans-serif;
+  font-size: clamp(2rem, 3.5vw, 3.2rem);
+  font-weight: 800;
+  line-height: 1.15;
+  color: #ffffff;
+  margin-bottom: 0.75rem;
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.7);
+}
+
+.hero-meta {
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+  margin-bottom: 1rem;
+}
+
+.hero-synopsis {
+  font-size: 0.95rem;
+  color: #e2e8f0;
+  line-height: 1.6;
+  margin-bottom: 1.75rem;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.8);
+}
+
+.hero-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+  flex-wrap: wrap;
+}
+
+/* ==========================================================================
+   Category & Brand Tiles Bar (Disney+ Tiles)
+   ========================================================================== */
+.category-tiles-bar {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+  gap: 1rem;
+  margin-bottom: 2.5rem;
+}
+
+.category-glass-tile {
+  background-color: var(--bg-surface-primary);
+  border: 1px solid var(--border-subtle);
+  border-radius: 10px;
+  padding: 1.25rem 0.9rem;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.55rem;
+  color: var(--text-secondary);
+  text-decoration: none;
+  box-shadow: var(--shadow-sm);
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+
+.category-glass-tile:hover {
+  transform: translateY(-4px);
+  border-color: rgba(255, 255, 255, 0.4);
+  box-shadow: var(--shadow-md);
+  color: #ffffff;
+  background-color: var(--bg-surface-secondary);
+}
+
+.category-tile-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 10px;
+  background-color: rgba(245, 158, 11, 0.12);
+  color: var(--accent-gold);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.3rem;
+  transition: all 0.2s ease;
+}
+
+.category-glass-tile:hover .category-tile-icon {
+  background-color: var(--accent-gold);
+  color: var(--accent-gold-text);
+  transform: scale(1.08);
+}
+
+.category-tile-name {
+  font-family: 'Outfit', sans-serif;
+  font-weight: 700;
+  font-size: 0.88rem;
+  letter-spacing: 0.02em;
+}
+
+/* ==========================================================================
+   Disney+ Movie Cards (2:3 Vertical, Clean White Border on Hover)
+   ========================================================================== */
+.movie-card {
+  position: relative;
+  aspect-ratio: 2 / 3;
+  width: 185px;
+  flex: 0 0 185px;
+  border-radius: 10px;
+  overflow: hidden;
+  background-color: var(--bg-surface-secondary);
+  border: 2px solid transparent;
+  box-shadow: var(--shadow-sm);
+  transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+  cursor: pointer;
+  text-decoration: none;
+  display: block;
+}
+
+/* Natural Disney+ Hover: crisp white border outline, gentle scale, natural drop shadow */
+.movie-card:hover {
+  transform: scale(1.05);
+  border-color: rgba(255, 255, 255, 0.85);
+  box-shadow: 0 14px 28px rgba(0, 0, 0, 0.6);
+  z-index: 10;
+}
+
+.movie-card-poster {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.movie-card-placeholder {
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, var(--bg-surface-primary) 0%, var(--bg-surface-secondary) 100%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  color: var(--text-muted);
+  padding: 1rem;
+  text-align: center;
+}
+
+.movie-card-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(11, 17, 32, 0) 35%, rgba(11, 17, 32, 0.95) 100%);
+  opacity: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: 0.85rem;
+  transition: opacity 0.25s ease;
+  z-index: 2;
+}
+
+.movie-card:hover .movie-card-overlay {
+  opacity: 1;
+}
+
+.movie-card-title {
+  font-family: 'Outfit', sans-serif;
+  font-weight: 700;
+  font-size: 0.92rem;
+  color: #ffffff;
+  line-height: 1.25;
+  margin-bottom: 0.2rem;
+}
+
+.movie-card-meta {
+  font-size: 0.74rem;
+  color: var(--text-secondary);
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  flex-wrap: wrap;
+}
+
+/* ==========================================================================
+   Interactive Catalog Finder & Quick Genre Filter (UX / Bem-Estar)
+   ========================================================================== */
+.catalog-finder-panel {
+  background: linear-gradient(135deg, rgba(14, 32, 74, 0.9) 0%, rgba(9, 19, 43, 0.95) 100%);
+  border: 1px solid var(--border-subtle);
+  border-radius: 14px;
+  padding: 1.25rem 1.5rem;
+  margin-bottom: 2.25rem;
+  box-shadow: var(--shadow-md);
+  backdrop-filter: blur(8px);
+}
+
+.catalog-search-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.catalog-search-icon {
+  position: absolute;
+  left: 1.15rem;
+  color: var(--accent-gold);
+  font-size: 1.15rem;
+  pointer-events: none;
+}
+
+.catalog-search-input {
+  width: 100%;
+  background-color: var(--navy-900);
+  border: 1px solid rgba(41, 85, 196, 0.45);
+  border-radius: 10px;
+  color: #ffffff;
+  padding: 0.8rem 2.8rem 0.8rem 3rem;
+  font-size: 0.95rem;
+  transition: all 0.2s ease;
+}
+
+.catalog-search-input:focus {
+  outline: none;
+  border-color: var(--accent-gold);
+  box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.2);
+  background-color: var(--navy-800);
+}
+
+.catalog-search-clear {
+  position: absolute;
+  right: 1rem;
+  background: transparent;
+  border: none;
+  color: var(--text-muted);
+  cursor: pointer;
+  font-size: 1.2rem;
+  display: none;
+  padding: 0;
+  line-height: 1;
+}
+
+.catalog-search-clear.active {
+  display: block;
+}
+
+.catalog-genre-pills {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 0.9rem;
+  overflow-x: auto;
+  padding-bottom: 0.25rem;
+  scrollbar-width: none;
+}
+
+.catalog-genre-pills::-webkit-scrollbar {
+  display: none;
+}
+
+.genre-pill-btn {
+  background-color: var(--navy-800);
+  border: 1px solid rgba(41, 85, 196, 0.4);
+  color: var(--text-secondary);
+  padding: 0.38rem 0.95rem;
+  border-radius: 9999px;
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.15s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.genre-pill-btn:hover {
+  color: #ffffff;
+  background-color: var(--navy-700);
+  border-color: rgba(255, 255, 255, 0.5);
+}
+
+.genre-pill-btn.active {
+  background-color: var(--accent-gold);
+  color: var(--accent-gold-text);
+  border-color: var(--accent-gold);
+  box-shadow: 0 2px 10px rgba(245, 158, 11, 0.3);
+}
+
+/* Instant Search Results Section */
+.live-results-section {
+  margin-bottom: 3rem;
+  animation: fadeIn 0.2s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.live-results-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
+  gap: 1.25rem;
+}
+
+/* ==========================================================================
+   Movie Quick View Modal (Disney+ Ergonomics & Accessibility)
+   ========================================================================== */
+.movie-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(5, 11, 24, 0.82);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  z-index: 2050;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.25rem;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.25s ease, visibility 0.25s ease;
+}
+
+.movie-modal-backdrop.active {
+  opacity: 1;
+  visibility: visible;
+}
+
+.movie-modal-dialog {
+  background: linear-gradient(145deg, #0e204a 0%, #09132b 100%);
+  border: 1px solid rgba(67, 115, 230, 0.45);
+  border-radius: 16px;
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.85);
+  width: 100%;
+  max-width: 840px;
+  max-height: 90vh;
+  overflow-y: auto;
+  position: relative;
+  transform: translateY(20px) scale(0.96);
+  transition: transform 0.25s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.movie-modal-backdrop.active .movie-modal-dialog {
+  transform: translateY(0) scale(1);
+}
+
+.movie-modal-close-btn {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  background: rgba(255, 255, 255, 0.12);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 50%;
+  width: 38px;
+  height: 38px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #ffffff;
+  font-size: 1.25rem;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  z-index: 20;
+}
+
+.movie-modal-close-btn:hover {
+  background: rgba(255, 255, 255, 0.25);
+  color: var(--accent-gold);
+  transform: scale(1.08);
+}
+
+.movie-modal-body {
+  display: flex;
+  flex-direction: column;
+}
+
+@media (min-width: 768px) {
+  .movie-modal-body {
+    flex-direction: row;
+  }
+}
+
+.movie-modal-poster-col {
+  flex: 0 0 290px;
+  background-color: var(--navy-950);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.movie-modal-poster-img {
+  width: 100%;
+  height: 100%;
+  min-height: 380px;
+  max-height: 480px;
+  object-fit: cover;
+  display: block;
+}
+
+.movie-modal-info-col {
+  flex: 1;
+  padding: 2.25rem 2rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.movie-modal-title {
+  font-family: 'Outfit', sans-serif;
+  font-size: 1.85rem;
+  font-weight: 800;
+  color: #ffffff;
+  line-height: 1.2;
+  margin-bottom: 0.6rem;
+}
+
+.movie-modal-synopsis {
+  color: #e2e8f0;
+  font-size: 0.95rem;
+  line-height: 1.65;
+  margin: 1.25rem 0 1.75rem 0;
+}
+
+.movie-modal-pricing-box {
+  background-color: var(--navy-900);
+  border: 1px solid var(--border-subtle);
+  border-radius: 10px;
+  padding: 0.85rem 1.15rem;
+  margin-bottom: 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+/* ==========================================================================
+   Horizontal Carousels
+   ========================================================================== */
+.carousel-section {
+  position: relative;
+  margin-bottom: 2.75rem;
+}
+
+.carousel-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.85rem;
+  padding: 0 0.25rem;
+}
+
+.carousel-title {
+  font-family: 'Outfit', sans-serif;
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.carousel-title::before {
+  content: '';
+  display: inline-block;
+  width: 4px;
+  height: 18px;
+  background-color: var(--accent-gold);
+  border-radius: 2px;
+}
+
+.carousel-track-wrapper {
+  position: relative;
+}
+
+.carousel-track {
+  display: flex;
+  gap: 1.15rem;
+  overflow-x: auto;
+  scroll-behavior: smooth;
+  padding: 8px 4px 18px 4px;
+  scrollbar-width: thin;
+  scrollbar-color: var(--navy-500) transparent;
+}
+
+.carousel-track::-webkit-scrollbar {
+  height: 6px;
+}
+
+.carousel-track::-webkit-scrollbar-thumb {
+  background: var(--navy-500);
+  border-radius: 3px;
+}
+
+.carousel-track::-webkit-scrollbar-thumb:hover {
+  background: var(--accent-gold);
+}
+
+.carousel-nav-btn {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 40px;
+  height: 74px;
+  background: rgba(11, 17, 32, 0.85);
+  border: 1px solid var(--border-medium);
+  backdrop-filter: blur(8px);
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 20;
+  transition: all 0.15s ease;
+  border-radius: 4px;
+}
+
+.carousel-nav-btn:hover {
+  background: rgba(245, 158, 11, 0.25);
+  border-color: var(--accent-gold);
+  color: var(--accent-gold);
+}
+
+.carousel-nav-prev { left: -6px; }
+.carousel-nav-next { right: -6px; }
+
+/* ==========================================================================
+   Badges (Accessible High-Contrast)
+   ========================================================================== */
+.badge-resolution {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.72rem;
+  font-weight: 700;
+  padding: 0.2rem 0.5rem;
+  border-radius: 4px;
+  background-color: rgba(255, 255, 255, 0.12);
+  color: #ffffff;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+}
+
+.badge-classification {
+  font-size: 0.72rem;
+  font-weight: 700;
+  padding: 0.2rem 0.5rem;
+  border-radius: 4px;
+}
+
+.badge-class-L   { background: #064e3b; color: #6ee7b7; border: 1px solid #059669; }
+.badge-class-A10 { background: #1e3a8a; color: #93c5fd; border: 1px solid #3b82f6; }
+.badge-class-A12 { background: #78350f; color: #fde68a; border: 1px solid #d97706; }
+.badge-class-A14 { background: #7c2d12; color: #fed7aa; border: 1px solid #ea580c; }
+.badge-class-A16 { background: #7f1d1d; color: #fecaca; border: 1px solid #dc2626; }
+.badge-class-A18 { background: #450a0a; color: #fca5a5; border: 1px solid #991b1b; }
+
+/* Category and Tag Badges */
+.badge-category-navy {
+  background-color: var(--navy-600);
+  color: #93c5fd;
+  border: 1px solid var(--navy-400);
+  font-weight: 600;
+  font-size: 0.75rem;
+  padding: 0.25rem 0.55rem;
+  border-radius: 4px;
+}
+
+.badge-genre-gold {
+  background-color: rgba(245, 158, 11, 0.15);
+  color: #fbbf24;
+  border: 1px solid rgba(245, 158, 11, 0.35);
+  font-weight: 600;
+  font-size: 0.75rem;
+  padding: 0.25rem 0.55rem;
+  border-radius: 4px;
+}
+
+.badge-count-gold {
+  background-color: var(--navy-700);
+  color: #fbbf24;
+  border: 1px solid var(--navy-500);
+  font-weight: 700;
+  font-size: 0.85rem;
+  padding: 0.25rem 0.7rem;
+  border-radius: 9999px;
+  display: inline-flex;
+  align-items: center;
+}
+
+.badge-status-paid {
+  background-color: rgba(16, 185, 129, 0.18);
+  color: #6ee7b7;
+  border: 1px solid #059669;
+  font-weight: 600;
+  font-size: 0.75rem;
+  padding: 0.25rem 0.6rem;
+  border-radius: 4px;
+}
+
+.badge-status-pending {
+  background-color: rgba(245, 158, 11, 0.18);
+  color: #fde68a;
+  border: 1px solid #d97706;
+  font-weight: 600;
+  font-size: 0.75rem;
+  padding: 0.25rem 0.6rem;
+  border-radius: 4px;
+}
+
+.badge-status-info {
+  background-color: rgba(59, 130, 246, 0.18);
+  color: #93c5fd;
+  border: 1px solid #3b82f6;
+  font-weight: 600;
+  font-size: 0.75rem;
+  padding: 0.25rem 0.6rem;
+  border-radius: 4px;
+}
+
+.badge-code-blue {
+  background-color: var(--navy-700);
+  color: #93c5fd;
+  border: 1px solid var(--navy-500);
+  font-family: monospace;
+  font-weight: 600;
+  font-size: 0.8rem;
+  padding: 0.25rem 0.6rem;
+  border-radius: 4px;
+}
+
+.badge-stat-card {
+  background-color: var(--navy-700);
+  color: #e2e8f0;
+  border: 1px solid var(--navy-500);
+  padding: 0.4rem 0.85rem;
+  border-radius: 8px;
+  font-size: 0.85rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.badge-stat-card strong {
+  color: var(--accent-gold);
+}
+
+/* Quick Action Cards in Management Dock */
+.quick-action-card {
+  background-color: var(--navy-800);
+  border: 1px solid var(--border-medium);
+  border-radius: 10px;
+  padding: 1rem 1.2rem;
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  text-decoration: none;
+  transition: all 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  width: 100%;
+}
+
+.quick-action-card:hover {
+  background-color: var(--navy-700);
+  border-color: rgba(255, 255, 255, 0.7);
+  transform: translateY(-2px);
+  color: #ffffff;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+}
+
+.quick-action-card .quick-action-title {
+  font-weight: 700;
+  color: #ffffff;
+  font-size: 0.95rem;
+}
+
+.quick-action-card .quick-action-subtitle {
+  color: var(--text-secondary);
+  font-size: 0.8rem;
+}
+
+/* ==========================================================================
+   Surfaces, Tables & Lists
+   ========================================================================== */
+.glass-panel {
+  background-color: var(--bg-surface-primary);
+  border: 1px solid var(--border-subtle);
+  border-radius: 12px;
+  box-shadow: var(--shadow-sm);
+  padding: 1.75rem;
+}
+
+.page-header-glass {
+  background-color: var(--bg-surface-primary);
+  border: 1px solid var(--border-subtle);
+  border-radius: 12px;
+  padding: 1.35rem 1.75rem;
+  margin-bottom: 1.75rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.page-header-title {
+  font-family: 'Outfit', sans-serif;
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: #ffffff;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.table-container-glass {
+  background-color: var(--bg-surface-primary);
+  border: 1px solid var(--border-subtle);
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
+}
+
+.table-glass {
+  width: 100%;
+  margin-bottom: 0;
+  border-collapse: separate;
+  border-spacing: 0;
+  color: var(--text-secondary);
+}
+
+.table-glass thead th {
+  background-color: var(--navy-800);
+  color: #cbd5e1;
+  font-family: 'Outfit', sans-serif;
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  padding: 1rem 1.25rem;
+  border-bottom: 1px solid var(--border-medium);
+}
+
+.table-glass tbody td {
+  padding: 0.9rem 1.25rem;
+  vertical-align: middle;
+  border-bottom: 1px solid var(--border-subtle);
+  background-color: transparent;
+  color: #e2e8f0;
+  font-size: 0.92rem;
+}
+
+.table-glass tbody tr:hover td {
+  background-color: rgba(255, 255, 255, 0.04);
+}
+
+.table-glass tbody tr:last-child td {
+  border-bottom: none;
+}
+
+/* Poster thumbnail in table */
+.movie-poster-thumb {
+  width: 44px;
+  height: 60px;
+  object-fit: cover;
+  border-radius: 5px;
+  border: 1px solid var(--border-medium);
+  box-shadow: var(--shadow-sm);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  cursor: pointer;
+  background-color: var(--navy-800);
+}
+
+.movie-poster-thumb:hover {
+  transform: scale(2.2);
+  box-shadow: var(--shadow-lg);
+  z-index: 1060;
+  position: relative;
+}
+
+.movie-poster-thumb-placeholder {
+  width: 44px;
+  height: 60px;
+  border-radius: 5px;
+  background-color: var(--navy-800);
+  border: 1px dashed var(--border-medium);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2rem;
+  color: var(--text-muted);
+}
+
+/* Action Buttons in Tables */
+.btn-action-rent {
+  background-color: rgba(245, 158, 11, 0.15);
+  color: #fbbf24;
+  border: 1px solid rgba(245, 158, 11, 0.35);
+  font-size: 0.82rem;
+  font-weight: 600;
+  border-radius: 5px;
+  padding: 0.32rem 0.65rem;
+  text-decoration: none;
+  transition: all 0.15s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.28rem;
+}
+
+.btn-action-rent:hover {
+  background-color: var(--accent-gold);
+  color: var(--accent-gold-text);
+  border-color: var(--accent-gold);
+}
+
+.btn-action-edit {
+  background-color: rgba(59, 130, 246, 0.15);
+  color: #93c5fd;
+  border: 1px solid rgba(59, 130, 246, 0.3);
+  font-size: 0.82rem;
+  font-weight: 600;
+  border-radius: 5px;
+  padding: 0.32rem 0.7rem;
+  text-decoration: none;
+  transition: all 0.15s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+
+.btn-action-edit:hover {
+  background-color: #2563eb;
+  color: #ffffff;
+  border-color: #2563eb;
+}
+
+.btn-action-delete {
+  background-color: rgba(239, 68, 68, 0.15);
+  color: #fca5a5;
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  font-size: 0.82rem;
+  font-weight: 600;
+  border-radius: 5px;
+  padding: 0.32rem 0.65rem;
+  text-decoration: none;
+  transition: all 0.15s ease;
+  display: inline-flex;
+  align-items: center;
+}
+
+.btn-action-delete:hover {
+  background-color: #dc2626;
+  color: #ffffff;
+  border-color: #dc2626;
+}
+
+/* ==========================================================================
+   Forms (High Contrast & Clear Accessibility)
+   ========================================================================== */
+.form-card-glass {
+  background-color: var(--bg-surface-primary);
+  border: 1px solid var(--border-medium);
+  border-radius: 14px;
+  box-shadow: var(--shadow-lg);
+  padding: 2.25rem;
+}
+
+/* Form Labels: High visibility */
+.form-card-glass .form-label {
+  font-weight: 600;
+  color: #e2e8f0;
+  font-size: 0.9rem;
+  margin-bottom: 0.45rem;
+}
+
+/* Inputs: Dark navy background with crisp white text and solid border */
+.form-card-glass .form-control,
+.form-card-glass .form-select {
+  background-color: var(--navy-800) !important;
+  border: 1px solid rgba(41, 85, 196, 0.45) !important;
+  border-radius: 6px;
+  color: #ffffff !important;
+  padding: 0.65rem 0.9rem;
+  font-size: 0.95rem;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.form-card-glass .form-control:focus,
+.form-card-glass .form-select:focus {
+  background-color: var(--navy-700) !important;
+  border-color: var(--accent-gold) !important;
+  box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.25) !important;
+  color: #ffffff !important;
+  outline: none;
+}
+
+.form-card-glass .form-control::placeholder {
+  color: #64748b !important;
+}
+
+.form-card-glass .form-select option {
+  background-color: var(--navy-800);
+  color: #ffffff;
+}
+
+.form-card-glass .form-text {
+  color: var(--text-muted);
+  font-size: 0.8rem;
+}
+
+/* Poster Assistant Card */
+.poster-preview-card {
+  border: 2px dashed rgba(41, 85, 196, 0.5);
+  border-radius: 10px;
+  background-color: var(--navy-800);
+  padding: 1.25rem;
+  text-align: center;
+}
+
+.poster-preview-img {
+  max-height: 200px;
+  width: auto;
+  border-radius: 6px;
+  box-shadow: var(--shadow-md);
+  object-fit: cover;
+}
+
+/* ==========================================================================
+   Toasts & Alerts
+   ========================================================================== */
+.toast-container {
+  position: fixed !important;
+  top: 86px !important;
+  right: 24px !important;
+  left: auto !important;
+  width: min(90vw, 380px);
+  z-index: 1090;
+}
+
+.toast-cinemaif {
+  background-color: var(--bg-surface-primary);
+  border: 1px solid var(--border-medium);
+  border-radius: 10px;
+  box-shadow: var(--shadow-lg);
+  color: #ffffff;
+}
+
+/* ==========================================================================
+   Footer
+   ========================================================================== */
+.footer-cinemaif {
+  background-color: var(--navy-900);
+  border-top: 1px solid var(--border-subtle);
+  color: var(--text-muted);
+  padding: 3rem 0 2rem 0;
+  margin-top: 4.5rem;
+}
+
+.footer-cinemaif h5 {
+  color: #ffffff;
+  font-family: 'Outfit', sans-serif;
+  font-size: 1.05rem;
+  margin-bottom: 1rem;
+}
+
+.footer-cinemaif a {
+  color: var(--text-secondary);
+  transition: color 0.15s ease;
+}
+
+.footer-cinemaif a:hover {
+  color: var(--accent-gold);
+}
+
+/* Empty State */
+.empty-state {
+  padding: 3.5rem 1.5rem;
+  text-align: center;
+}
+
+.empty-state-icon {
+  font-size: 3rem;
+  color: var(--text-muted);
+  margin-bottom: 1rem;
+}
+
+.empty-state-title {
+  font-family: 'Outfit', sans-serif;
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #ffffff;
+  margin-bottom: 0.4rem;
+}
+
+.empty-state-text {
+  color: var(--text-secondary);
+  max-width: 400px;
+  margin: 0 auto 1.5rem auto;
+}
+
+/* Responsive Rules */
+@media (max-width: 768px) {
+  body {
+    padding-top: 72px;
+  }
+
+  .hero-spotlight {
+    min-height: 380px;
+  }
+
+  .hero-content {
+    padding: 1.75rem 1.25rem;
+  }
+
+  .hero-title {
+    font-size: 1.85rem;
+  }
+
+  .movie-card {
+    width: 140px;
+    flex: 0 0 140px;
+  }
+
+  .page-header-glass {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 1.25rem;
+  }
+
+  .carousel-nav-btn {
+    display: none;
+  }
 }

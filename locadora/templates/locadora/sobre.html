@@ -1,13 +1,74 @@
-{% load static %}
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-    <link rel="stylesheet" href={% static "css/style.css" %}>
-</head>
-<body>
-    sobre....sobre.....sobre
-</body>
-</html>
+{% extends "locadora/modelo.html" %}
+
+{% block title %}Sobre o Projeto | CINEMAIF{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center py-4">
+    <div class="col-lg-10">
+        <div class="glass-panel p-0 overflow-hidden mb-4">
+            <div class="p-4 p-md-5 text-white position-relative" style="background: linear-gradient(135deg, #0e204a 0%, #132a61 100%);">
+                <span class="badge bg-warning text-dark font-weight-bold mb-2 px-3 py-1 rounded-pill">Arquitetura CINEMAIF-v2</span>
+                <h1 class="display-6 font-weight-bold mb-3 text-white">Cinema e Tecnologia em Alta Definição</h1>
+                <p class="lead fs-6 text-secondary mb-0">
+                    O CINEMAIF é uma plataforma que combina a estética moderna dos maiores serviços de streaming (Disney+ e Netflix) com uma arquitetura robusta no Django baseada em ModelForms e centralização de dados.
+                </p>
+            </div>
+
+            <div class="p-4 p-md-5">
+                <div class="row g-4">
+                    <div class="col-md-4">
+                        <div class="p-4 rounded-3 h-100 border border-secondary border-opacity-25" style="background: var(--bg-surface-secondary);">
+                            <div class="stat-icon-wrapper mb-3" style="width: 44px; height: 44px; border-radius: 10px; background: rgba(59, 130, 246, 0.15); color: #60a5fa; display: flex; align-items: center; justify-content: center;">
+                                <i class="bi bi-layers fs-4"></i>
+                            </div>
+                            <h4 class="h5 font-weight-bold text-white mb-2">Padrão Streaming</h4>
+                            <p class="text-secondary small m-0">
+                                Interface com ambient lighting, hero banner cinematográfico e carrosséis horizontais dinâmicos.
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="col-md-4">
+                        <div class="p-4 rounded-3 h-100 border border-secondary border-opacity-25" style="background: var(--bg-surface-secondary);">
+                            <div class="stat-icon-wrapper mb-3" style="width: 44px; height: 44px; border-radius: 10px; background: rgba(255, 184, 0, 0.15); color: #FFB800; display: flex; align-items: center; justify-content: center;">
+                                <i class="bi bi-shield-check fs-4"></i>
+                            </div>
+                            <h4 class="h5 font-weight-bold text-white mb-2">Model Centric</h4>
+                            <p class="text-secondary small m-0">
+                                O modelo atua como fonte central da verdade com ModelForms e validações automatizadas.
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="col-md-4">
+                        <div class="p-4 rounded-3 h-100 border border-secondary border-opacity-25" style="background: var(--bg-surface-secondary);">
+                            <div class="stat-icon-wrapper mb-3" style="width: 44px; height: 44px; border-radius: 10px; background: rgba(16, 185, 129, 0.15); color: #10B981; display: flex; align-items: center; justify-content: center;">
+                                <i class="bi bi-cloud-arrow-down fs-4"></i>
+                            </div>
+                            <h4 class="h5 font-weight-bold text-white mb-2">Capas Híbridas</h4>
+                            <p class="text-secondary small m-0">
+                                Obtenção automatizada de posters em alta definição via web ou upload de arquivo local.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <hr class="border-secondary border-opacity-25 my-5">
+
+                <div class="text-center">
+                    <h3 class="h4 font-weight-bold text-white mb-2">Explore o Acervo Completo</h3>
+                    <p class="text-secondary small mb-4">Navegue pelas categorias e confira as funcionalidades do sistema.</p>
+                    <div class="d-flex justify-content-center gap-3">
+                        <a href="{% url 'listar_filme' %}" class="btn-primary-gold">
+                            <i class="bi bi-camera-reels"></i> Explorar Catálogo
+                        </a>
+                        <a href="{% url 'contato' %}" class="btn-secondary-glass">
+                            Central de Contato
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

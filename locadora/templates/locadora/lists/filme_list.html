@@ -1,0 +1,112 @@
+{% extends "locadora/modelo.html" %}
+
+{% block title %}Catálogo de Filmes | CINEMAIF{% endblock %}
+
+{% block content %}
+<div class="page-header-glass">
+    <div>
+        <h1 class="page-header-title">
+            <i class="bi bi-camera-reels text-warning"></i>
+            Catálogo de Filmes
+            <span class="badge-count-gold ms-2">
+                {{ object_list|length }}
+            </span>
+        </h1>
+        <p class="text-secondary small m-0 mt-1">Gerencie os títulos, classificações etárias, categorias e capas do acervo.</p>
+    </div>
+    <div class="d-flex align-items-center gap-2 flex-wrap">
+        <div class="position-relative" style="width: 230px;">
+            <i class="bi bi-search position-absolute text-warning" style="top: 9px; left: 12px; font-size: 0.85rem;"></i>
+            <input type="text" id="tableFilterInput" class="form-control form-control-sm ps-4" placeholder="Filtrar catálogo..." style="background: var(--navy-900); border: 1px solid var(--border-subtle); color: #fff; border-radius: 20px;">
+        </div>
+        <a href="{% url 'novo_filme' %}" class="btn-primary-gold btn-primary-gold-sm">
+            <i class="bi bi-plus-lg"></i> Cadastrar Filme
+        </a>
+    </div>
+</div>
+
+<div class="table-container-glass">
+    <div class="table-responsive">
+        <table class="table-glass">
+            <thead>
+                <tr>
+                    <th style="width: 70px;">ID</th>
+                    <th style="width: 70px;">Poster</th>
+                    <th>Título</th>
+                    <th>Classificação</th>
+                    <th>Categoria</th>
+                    <th>Gênero</th>
+                    <th>Duração</th>
+                    <th>Ano</th>
+                    <th class="text-end" style="width: 190px;">Ações</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for filme in object_list %}
+                <tr>
+                    <td class="text-secondary fw-semibold">#{{ filme.id }}</td>
+                    <td>
+                        {% if filme.poster_url %}
+                            <img src="{{ filme.poster_url }}" alt="Poster de {{ filme.titulo }}" class="movie-poster-thumb" loading="lazy">
+                        {% else %}
+                            <div class="movie-poster-thumb-placeholder" title="Sem poster">
+                                <i class="bi bi-film"></i>
+                            </div>
+                        {% endif %}
+                    </td>
+                    <td class="fw-bold text-white">{{ filme.titulo }}</td>
+                    <td>
+                        <span class="badge-classification badge-class-{{ filme.classificacao }}">
+                            {{ filme.get_classificacao_display }}
+                        </span>
+                    </td>
+                    <td><span class="badge-category-navy">{{ filme.categoria.nome }}</span></td>
+                    <td><span class="badge-genre-gold">{{ filme.genero.nome }}</span></td>
+                    <td class="text-secondary">{{ filme.duração }}</td>
+                    <td class="text-secondary">{{ filme.ano_lancamento }}</td>
+                    <td class="text-end">
+                        <div class="btn-action-group">
+                            <a href="{% url 'novo_locacao' %}?filme={{ filme.pk }}" class="btn-action-rent" title="Alugar Filme">
+                                <i class="bi bi-play-circle"></i> Alugar
+                            </a>
+                            <a href="{% url 'editar_filme' filme.pk %}" class="btn-action-edit" title="Editar">
+                                <i class="bi bi-pencil-square"></i>
+                            </a>
+                            <a href="{% url 'excluir_filme' filme.pk %}" class="btn-action-delete" title="Excluir">
+                                <i class="bi bi-trash3"></i>
+                            </a>
+                        </div>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="9" class="p-0">
+                        <div class="empty-state">
+                            <i class="bi bi-film empty-state-icon"></i>
+                            <h3 class="empty-state-title">Nenhum filme cadastrado</h3>
+                            <p class="empty-state-text">O catálogo ainda não possui filmes. Cadastre títulos com capa automática na web ou upload.</p>
+                            <a href="{% url 'novo_filme' %}" class="btn-primary-gold btn-primary-gold-sm">
+                                <i class="bi bi-plus-lg"></i> Cadastrar Primeiro Filme
+                            </a>
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.getElementById('tableFilterInput')?.addEventListener('input', function () {
+    const q = this.value.toLowerCase().trim();
+    const rows = document.querySelectorAll('.table-glass tbody tr');
+    rows.forEach(tr => {
+        if (!tr.querySelector('td') || tr.querySelector('.empty-state')) return;
+        tr.style.display = tr.textContent.toLowerCase().includes(q) ? '' : 'none';
+    });
+});
+</script>
+{% endblock %}

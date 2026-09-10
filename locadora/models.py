@@ -40,7 +40,7 @@ class Genero(models.Model):
     cadastrado_em = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return f"{self.titulo}\n{self.descricao}\n"
+        return self.nome
 
     
 class Categoria(models.Model):
@@ -52,8 +52,8 @@ class Categoria(models.Model):
     atualizado_em = models.DateTimeField(auto_now=True)
     cadastrado_em = models.DateTimeField(auto_now_add=True)
 
-    # def __str__(self):
-    #     return f"{self.nome}"
+    def __str__(self):
+        return self.nome
 
 class Filme(models.Model):
     CLASSIFICACAO = (
@@ -66,16 +66,33 @@ class Filme(models.Model):
     )
     titulo = models.CharField(max_length=50, verbose_name="Título", help_text="Digite o titulo do filme")
     duração = models.CharField(max_length=10, verbose_name="Duração",help_text="Digite a duração do filme")
-    descricao = models.CharField(max_length=10, verbose_name="Descrição")
+    descricao = models.CharField(max_length=255, blank=True, verbose_name="Descrição")
     ano_lancamento=models.IntegerField(verbose_name="Ano de lançamento")
     
     classificacao = models.CharField(verbose_name="Classificação", choices=CLASSIFICACAO)
     categoria=models.ForeignKey(Categoria, on_delete=models.PROTECT)
     genero=models.ForeignKey(Genero, on_delete=models.PROTECT)
 
+    capa = models.ImageField(upload_to='capas/', null=True, blank=True, verbose_name="Capa (Upload de Arquivo)")
+    capa_url = models.URLField(max_length=500, null=True, blank=True, verbose_name="Capa (Link da Web)")
+
     cadastrado_por = models.ForeignKey("auth.User", on_delete=models.PROTECT, null=True)
     atualizado_em = models.DateTimeField(auto_now=True)
     cadastrado_em = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.titulo} ({self.ano_lancamento})"
+
+    @property
+    def poster_url(self):
+        if self.capa:
+            try:
+                return self.capa.url
+            except Exception:
+                pass
+        if self.capa_url:
+            return self.capa_url
+        return None
 
 class Locacao(models.Model):
     METODOS_PAGAMENTO = (
@@ -100,6 +117,9 @@ class Locacao(models.Model):
     cadastrado_por = models.ForeignKey("auth.User", on_delete=models.PROTECT, null=True)
     atualizado_em = models.DateTimeField(auto_now=True)
     cadastrado_em = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"Locação #{self.id} - {self.filme.titulo} ({self.cliente.nome})"
 
     def save(self):
         # User biblioteca relativedelta

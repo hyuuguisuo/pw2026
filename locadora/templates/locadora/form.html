@@ -1,348 +1,209 @@
 {% extends "locadora/modelo.html" %}
-
-{% load static %}
 {% load crispy_forms_tags %}
 
-{% block navbar %}
-    <nav class="navbar navbar-dark bg-dark fixed-top">
-        <div class="container">
-            <a class="navbar-brand" href="#">LOCwADORA DE FILMES+</a>
-            
-            {% if "Cliente" in titulo %}
-              <ul id="partesup" class="nav nav-pills justify-content-center py-2">
-                  <li class="nav-item">
-                      <a class="nav-link text-white" href="{% url 'página_inicial' %}">Início</a>
-                  </li>
-                  <li class="nav-item">
-                      <a class="nav-link text-white" href="{% url 'listar_filme' %}">Filmes</a>
-                  </li>
-                  <li class="nav-item">
-                      <a class="nav-link text-white active" href="{% url 'listar_cliente' %}">Clientes</a>
-                  </li>
-                  <li class="nav-item">
-                      <a class="nav-link text-white" href="{% url 'listar_fornecedor' %}">Fornecedores</a>
-                  </li>
-              
-            {% endif %}
-
-            {% if "Filme" in titulo %}
-              <ul id="partesup" class="nav nav-pills justify-content-center py-2">
-                  <li class="nav-item">
-                      <a class="nav-link text-white" href="{% url 'página_inicial' %}">Início</a>
-                  </li>
-                  <li class="nav-item">
-                      <a class="nav-link text-white active" href="{% url 'listar_filme' %}">Filmes</a>
-                  </li>
-                  <li class="nav-item">
-                      <a class="nav-link text-white" href="{% url 'listar_cliente' %}">Clientes</a>
-                  </li>
-                  <li class="nav-item">
-                      <a class="nav-link text-white" href="{% url 'listar_fornecedor' %}">Fornecedores</a>
-                  </li>
-              
-            {% endif %}
-
-            {% if "Fornecedor" in titulo %}
-              <ul id="partesup" class="nav nav-pills justify-content-center py-2">
-                  <li class="nav-item">
-                      <a class="nav-link text-white" href="{% url 'página_inicial' %}">Início</a>
-                  </li>
-                  <li class="nav-item">
-                      <a class="nav-link text-white" href="{% url 'listar_filme' %}">Filmes</a>
-                  </li>
-                  <li class="nav-item">
-                      <a class="nav-link text-white" href="{% url 'listar_cliente' %}">Clientes</a>
-                  </li>
-                  <li class="nav-item">
-                      <a class="nav-link text-white active" href="{% url 'listar_fornecedor' %}">Fornecedores</a>
-                  </li>
-                  
-              
-
-              {% if request.user.is_authenticated %}
-                    <li class="nav-item">
-                        <form action="{% url 'logout' %}" method="post">
-                            {% csrf_token %}
-                            <button class="nav-link text-white">Sair</a>
-                        </form>
-                        
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link text-white" href="{% url 'password_change' %}">Alterar</a>
-                    </li>
-                {% else %}
-                    <li class="nav-item">
-                        <a class="nav-link text-white" href="{% url 'login' %}">Entrar<a>
-                    </li>
-                {% endif %}
-                </ul>
-            {% endif %}
-            <!-- <form class="d-flex">
-                <input class="form-control me-2" type="search" placeholder="Buscar">
-                <button class="btn btn-outline-light">Buscar</button>
-            </form> -->
-        </div>
-    </nav>
-{% endblock %}
-
-
+{% block title %}{{ titulo|default:"Formulário" }} | CINEMAIF{% endblock %}
 
 {% block content %}
-<section class="py-5 py-lg-6">
-  <div class="container">
-    <div>
-      <h3 class="text-center border-bottom pb-2 mb-4">{{ titulo }}</h3>
-    </div>
-    
+<div class="row justify-content-center py-4">
+    <div class="col-12 col-md-9 col-lg-7">
+        <div class="form-card-glass shadow-lg">
+            <div class="d-flex align-items-center justify-content-between border-bottom border-secondary border-opacity-25 pb-3 mb-4">
+                <div>
+                    <h2 class="h3 m-0 text-white font-weight-bold">{{ titulo|default:"Formulário" }}</h2>
+                    <p class="text-secondary small m-0 mt-1">Preencha as especificações técnicas e operacionais.</p>
+                </div>
+                <div class="stat-icon-wrapper" style="background: rgba(255, 184, 0, 0.12); color: #FFB800; width: 48px; height: 48px; border-radius: 12px; display: flex; align-items: center; justify-content: center;">
+                    <i class="bi bi-pencil-square fs-4"></i>
+                </div>
+            </div>
 
-    {% if botao == "LISTAR" and "Cliente" in titulo%}
-    <button class="add" onclick="">+</button>
-      <div class="card shadow-sm">
-            <div class="card-body p-0">
-                <div class="table-responsive">
-                    <table class="table table-hover mb-0">
-                        <thead class="table-light">
-                            <tr>
-                  <th>ID</th>
-                  <th>Nome</th>
-                  
-                  <th>CPF</th>
-                  <th>E-mail</th>
-                  <th>Telefone</th>
-
-                  <th>Ações</th>
-                </tr>
-                <tbody>
-                {% for item in object_list %}
+            <form method="post" enctype="multipart/form-data" novalidate id="mainForm">
+                {% csrf_token %}
                 
-                <tr>
-                  <td class="align-middle">{{ item.id }}</td>
-                  <td class="align-middle fw-bold">{{ item.nome }}</td>
+                {{ form|crispy }}
 
-                  <td class="align-middle">{{ item.cpf }}</td>
-                  <td class="align-middle">{{ item.email }}</td>
-                  <td class="align-middle">{{ item.telefone }}</td>
+                <!-- Painel Assistente de Capa de Streaming -->
+                <div id="posterAssistant" class="d-none mt-3 p-3 rounded-3 border" style="background: var(--bg-surface-secondary); border-color: var(--border-medium) !important;">
+                    <div class="d-flex align-items-center justify-content-between mb-2">
+                        <span class="fw-bold text-white small d-flex align-items-center gap-1">
+                            <i class="bi bi-image text-warning"></i> Assistente de Capa Oficial
+                        </span>
+                        <button type="button" id="btnBuscarCapa" class="btn btn-sm text-white" style="background-color: var(--navy-600); border: 1px solid var(--navy-400);">
+                            <i class="bi bi-search text-warning me-1"></i> Buscar Capa na Web
+                        </button>
+                    </div>
 
-                  <td class="align-middle">
-                    <a href="{% url 'editar_cliente' item.pk %}" class="btn btn-sm btn-outline-primary">Editar</a>
-                    <a href="{% url 'excluir_cliente' item.pk %}" class="btn btn-sm btn-outline-danger">Excluir</a>
-                  </td>
-                </tr>
+                    <!-- Mensagem de feedback / status -->
+                    <div id="posterSearchStatus" class="small mb-2 d-none" style="color: #93c5fd;">
+                        <span class="spinner-border spinner-border-sm me-1" role="status"></span>
+                        Consultando acervo cinematográfico na web...
+                    </div>
 
-                {% empty %}
-                
-                <tr>
-                  <td colspan="6" class="text-center py-4 text-muted">Nenhum registro encontrado.</td>
-                </tr>
-                
-                {% endfor %}
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </div>
-    {% elif botao == "LISTAR" and "Filme" in titulo%}
-    <button class="add" onclick="">+</button>
-      <div class="card shadow-sm">
-            <div class="card-body p-0">
-                <div class="table-responsive">
-                    <table class="table table-hover mb-0">
-                        <thead class="table-light">
-                            <tr>
-                  <th>ID</th>
-                  <th>Nome</th>
-                  
-                  <th>CPF</th>
-                  <th>E-mail</th>
-                  <th>Telefone</th>
+                    <!-- Chips de sugestões alternativas -->
+                    <div id="posterSuggestions" class="d-flex flex-wrap gap-1 mb-2 d-none"></div>
 
-                  <th>Ações</th>
-                </tr>
-                <tbody>
-                {% for item in object_list %}
-                
-                <tr>
-                  <td class="align-middle">{{ item.id }}</td>
-                  <td class="align-middle fw-bold">{{ item.nome }}</td>
+                    <!-- Box de Prévia -->
+                    <div id="posterPreviewBox" class="poster-preview-card mt-2">
+                        <div id="posterEmptyState">
+                            <i class="bi bi-film fs-1 text-secondary opacity-50 d-block mb-1"></i>
+                            <span class="text-secondary small">Nenhum poster vinculado. Busque na web pelo título ou selecione um arquivo.</span>
+                        </div>
+                        <div id="posterLoadedState" class="d-none">
+                            <img id="posterImgPreview" src="" alt="Prévia do Poster" class="poster-preview-img mb-2">
+                            <div class="d-flex justify-content-center gap-2">
+                                <span class="badge-status-paid" id="posterSourceBadge">Poster Pronto</span>
+                                <button type="button" id="btnLimparCapa" class="btn btn-link btn-sm text-danger p-0 text-decoration-none">
+                                    <i class="bi bi-x-circle"></i> Remover
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
 
-                  <td class="align-middle">{{ item.cpf }}</td>
-                  <td class="align-middle">{{ item.email }}</td>
-                  <td class="align-middle">{{ item.telefone }}</td>
-
-                  <td class="align-middle">
-                    <a href="{% url 'editar_filme' item.pk %}" class="btn btn-sm btn-outline-primary">Editar</a>
-                    <a href="{% url 'excluir_filme' item.pk %}" class="btn btn-sm btn-outline-danger">Excluir</a>
-                  </td>
-                </tr>
-
-                {% empty %}
-                
-                <tr>
-                  <td colspan="6" class="text-center py-4 text-muted">Nenhum registro encontrado.</td>
-                </tr>
-                
-                {% endfor %}
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </div>
-      {% elif botao == "LISTAR" and "Fornecedor" in titulo%}
-      <button class="add" onclick="">+</button>
-      <div class="card shadow-sm">
-            <div class="card-body p-0">
-                <div class="table-responsive">
-                    <table class="table table-hover mb-0">
-                        <thead class="table-light">
-                            <tr>
-                  <th>ID</th>
-                  <th>Nome</th>
-                  
-                  <th>CNPJ</th>
-                  <th>Contato</th>
-                  <th>Tipo de Distribuição</th>
-
-                  <th>Cadastrado Em:</th>
-                  <th>Modificado Em:</th>
-                  <th>Criador:</th>
-
-                  <th>Ações</th>
-                </tr>
-                <tbody>
-                {% for item in object_list %}
-                <tr>
-                  <td class="align-middle">{{ item.id }}</td>
-                  <td class="align-middle fw-bold">{{ item.nome }}</td>
-
-                  <td class="align-middle">{{ item.cnpj }}</span></td>
-                  <td class="align-middle">{{ item.contato }}</td>
-                  <td class="align-middle">{{ item.tipo_distribuicao }}</td>
-
-                  <td class="align-middle"><span class="badge bg-info text-dark">{{ item.cadastrado_em }}</span></td>
-                  <td class="align-middle"><span class="badge bg-info text-dark">{{ item.atualizado_em }}</td>
-                  <td class="align-middle">{{ item.cadastrado_por }}</td>
-
-                  <td class="align-middle">
-                    <a href="{% url 'editar_fornecedor' item.pk %}" class="btn btn-sm btn-outline-primary">Editar</a>
-                    <a href="{% url 'excluir_fornecedor' item.pk %}" class="btn btn-sm btn-outline-danger">Excluir</a>
-                  </td>
-                  
-                </tr>
-                {% empty %}
-                <tr>
-                  <td colspan="6" class="text-center py-4 text-muted">Nenhum registro encontrado.</td>
-                </tr>
-                {% endfor %}
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </div>
-     {% elif botao == "LISTAR" and "Genero" in titulo%}
-      <button class="add" onclick="">+</button>
-      <div class="card shadow-sm">
-            <div class="card-body p-0">
-                <div class="table-responsive">
-                    <table class="table table-hover mb-0">
-                        <thead class="table-light">
-                            <tr>
-                  <th>ID</th>
-                  <th>Nome</th>
-                  
-                  <th>D</th>
-                  <th>E-mail</th>
-                  <th>Telefone</th>
-
-                  <th>Ações</th>
-                </tr>
-                <tbody>
-                {% for item in object_list %}
-                <tr>
-                  <td class="align-middle">{{ item.id }}</td>
-                  <td class="align-middle fw-bold">{{ item.nome }}</td>
-
-                  <td class="align-middle"><span class="badge bg-info text-dark">{{ item.cnpj }}</span></td>
-                  <td class="align-middle">{{ item.contato }}</td>
-                  <td class="align-middle">{{ item.tipo_distribuicao }}</td>
-
-                  <td class="align-middle">
-                    <a href="{% url 'editar_fornecedor' item.pk %}" class="btn btn-sm btn-outline-primary">Editar</a>
-                    <a href="{% url 'excluir_fornecedor' item.pk %}" class="btn btn-sm btn-outline-danger">Excluir</a>
-                  </td>
-                </tr>
-                {% empty %}
-                <tr>
-                  <td colspan="6" class="text-center py-4 text-muted">Nenhum registro encontrado.</td>
-                </tr>
-                {% endfor %}
-              </tbody>
-            </table>
-          </div>
+                <div class="d-flex align-items-center justify-content-end gap-3 mt-4 pt-3 border-top border-secondary border-opacity-25">
+                    <a href="javascript:history.back()" class="btn-secondary-glass">
+                        <i class="bi bi-arrow-left"></i> Cancelar
+                    </a>
+                    <button type="submit" class="btn-primary-gold">
+                        <i class="bi bi-check2-circle"></i> {{ botao|default:"Salvar Registro" }}
+                    </button>
+                </div>
+            </form>
         </div>
     </div>
-     {% elif botao == "LISTAR" and "Categoria" in titulo%}
-      <button class="add" onclick="">+</button>
-      <div class="card shadow-sm">
-            <div class="card-body p-0">
-                <div class="table-responsive">
-                    <table class="table table-hover mb-0">
-                        <thead class="table-light">
-                            <tr>
-                  <th>ID</th>
-                  <th>Nome</th>
-                  
-                  <th>D</th>
-                  <th>E-mail</th>
-                  <th>Telefone</th>
+</div>
+{% endblock %}
 
-                  <th>Ações</th>
-                </tr>
-                <tbody>
-                {% for item in object_list %}
-                <tr>
-                  <td class="align-middle">{{ item.id }}</td>
-                  <td class="align-middle fw-bold">{{ item.nome }}</td>
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const capaUrlInput = document.getElementById('id_capa_url');
+    const capaFileInput = document.getElementById('id_capa_file');
+    const tituloInput = document.getElementById('id_titulo');
+    const assistant = document.getElementById('posterAssistant');
 
-                  <td class="align-middle"><span class="badge bg-info text-dark">{{ item.cnpj }}</span></td>
-                  <td class="align-middle">{{ item.contato }}</td>
-                  <td class="align-middle">{{ item.tipo_distribuicao }}</td>
+    if (!capaUrlInput && !capaFileInput) return;
 
-                  <td class="align-middle">
-                    <a href="{% url 'editar_fornecedor' item.pk %}" class="btn btn-sm btn-outline-primary">Editar</a>
-                    <a href="{% url 'excluir_fornecedor' item.pk %}" class="btn btn-sm btn-outline-danger">Excluir</a>
-                  </td>
-                </tr>
-                {% empty %}
-                <tr>
-                  <td colspan="6" class="text-center py-4 text-muted">Nenhum registro encontrado.</td>
-                </tr>
-                {% endfor %}
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </div>
-    {% else %}
-      <div class="row justify-content-center">
-        <div class="col-md-6">
-          <form method="post">
-            {% csrf_token %}
+    assistant.classList.remove('d-none');
 
-            {% if botao == "OBLITERAR" %}
-              <h4>Deseja realmente excluir este item?</h4>
-              <div class="alert alert-danger fs-5" role="alert">
-                {{ object }}
-              </div>
-              <button type="submit" class="btn btn-danger">OBLITERAR ! !</button>
-              <a href="../" class="btn btn-secondary">Cancelar</a>
-            {% else %}
-              {{ form|crispy }}
-              <button type="submit" class="btn btn-primary w-100 mt-3">{{ botao }}</button>
-            {% endif %}
-          </form>
-        </div>
-      </div>
-    {% endif %}
-  </div>
-</section>
-{% endblock content %}
+    const capaUrlGroup = capaUrlInput ? capaUrlInput.closest('.mb-3') : null;
+    if (capaUrlGroup && capaUrlGroup.parentNode) {
+        capaUrlGroup.parentNode.insertBefore(assistant, capaUrlGroup.nextSibling);
+    }
+
+    const btnBuscar = document.getElementById('btnBuscarCapa');
+    const statusBox = document.getElementById('posterSearchStatus');
+    const suggestionsBox = document.getElementById('posterSuggestions');
+    const emptyState = document.getElementById('posterEmptyState');
+    const loadedState = document.getElementById('posterLoadedState');
+    const previewImg = document.getElementById('posterImgPreview');
+    const sourceBadge = document.getElementById('posterSourceBadge');
+    const btnLimpar = document.getElementById('btnLimparCapa');
+
+    function exibirPreview(url, sourceLabel) {
+        if (!url) {
+            emptyState.classList.remove('d-none');
+            loadedState.classList.add('d-none');
+            previewImg.src = '';
+            return;
+        }
+        previewImg.src = url;
+        sourceBadge.textContent = sourceLabel || 'Poster Pronto';
+        emptyState.classList.add('d-none');
+        loadedState.classList.remove('d-none');
+    }
+
+    if (capaUrlInput && capaUrlInput.value) {
+        exibirPreview(capaUrlInput.value, 'Link Web');
+    }
+
+    if (capaUrlInput) {
+        capaUrlInput.addEventListener('input', function () {
+            if (this.value.trim()) {
+                exibirPreview(this.value.trim(), 'Link Externo');
+            } else {
+                exibirPreview(null);
+            }
+        });
+    }
+
+    if (capaFileInput) {
+        capaFileInput.addEventListener('change', function (e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function (ev) {
+                    exibirPreview(ev.target.result, 'Arquivo (' + file.name + ')');
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+    }
+
+    btnLimpar.addEventListener('click', function () {
+        if (capaUrlInput) capaUrlInput.value = '';
+        if (capaFileInput) capaFileInput.value = '';
+        exibirPreview(null);
+    });
+
+    btnBuscar.addEventListener('click', function () {
+        const titulo = tituloInput ? tituloInput.value.trim() : '';
+        if (!titulo) {
+            alert('Por favor, informe o Título do filme acima antes de buscar a capa.');
+            if (tituloInput) tituloInput.focus();
+            return;
+        }
+
+        btnBuscar.disabled = true;
+        statusBox.classList.remove('d-none');
+        statusBox.innerHTML = '<span class="spinner-border spinner-border-sm me-1" role="status"></span> Buscando posters para "' + titulo + '"...';
+        suggestionsBox.classList.add('d-none');
+        suggestionsBox.innerHTML = '';
+
+        fetch('/api/buscar-capa/?titulo=' + encodeURIComponent(titulo))
+            .then(res => res.json())
+            .then(data => {
+                btnBuscar.disabled = false;
+                statusBox.classList.add('d-none');
+
+                if (data.sucesso && data.principal) {
+                    if (capaUrlInput) {
+                        capaUrlInput.value = data.principal.capa_url;
+                    }
+                    exibirPreview(data.principal.capa_url, 'Web: ' + data.principal.titulo);
+
+                    if (data.resultados && data.resultados.length > 1) {
+                        suggestionsBox.classList.remove('d-none');
+                        const label = document.createElement('span');
+                        label.className = 'w-100 text-secondary small mb-1';
+                        label.textContent = 'Outras opções encontradas:';
+                        suggestionsBox.appendChild(label);
+
+                        data.resultados.forEach(item => {
+                            const chip = document.createElement('button');
+                            chip.type = 'button';
+                            chip.className = 'btn btn-outline-secondary btn-sm poster-suggestion-chip text-truncate';
+                            chip.style.maxWidth = '200px';
+                            chip.textContent = item.titulo;
+                            chip.title = item.titulo;
+                            chip.onclick = function () {
+                                if (capaUrlInput) capaUrlInput.value = item.capa_url;
+                                exibirPreview(item.capa_url, 'Web: ' + item.titulo);
+                            };
+                            suggestionsBox.appendChild(chip);
+                        });
+                    }
+                } else {
+                    alert(data.mensagem || 'Nenhum poster localizado automaticamente. Você pode inserir um link ou anexar um arquivo.');
+                }
+            })
+            .catch(err => {
+                btnBuscar.disabled = false;
+                statusBox.classList.add('d-none');
+                alert('Erro ao consultar o serviço de capas na web.');
+                console.error(err);
+            });
+    });
+});
+</script>
+{% endblock %}

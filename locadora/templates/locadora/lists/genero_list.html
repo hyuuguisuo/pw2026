@@ -1,0 +1,70 @@
+{% extends "locadora/modelo.html" %}
+
+{% block title %}Gêneros | CINEMAIF{% endblock %}
+
+{% block content %}
+<div class="page-header-glass">
+    <div>
+        <h1 class="page-header-title">
+            <i class="bi bi-bookmark-heart text-warning"></i>
+            Gêneros Cinematográficos
+            <span class="badge-count-gold ms-2">{{ object_list|length }}</span>
+        </h1>
+        <p class="text-secondary small m-0 mt-1">Classificação dos filmes por gênero no catálogo.</p>
+    </div>
+    <div>
+        <a href="{% url 'novo_genero' %}" class="btn-primary-gold btn-primary-gold-sm">
+            <i class="bi bi-plus-lg"></i> Novo Gênero
+        </a>
+    </div>
+</div>
+
+<div class="table-container-glass">
+    <div class="table-responsive">
+        <table class="table-glass">
+            <thead>
+                <tr>
+                    <th style="width: 80px;">ID</th>
+                    <th>Nome do Gênero</th>
+                    <th class="text-end" style="width: 170px;">Ações</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for genero in object_list %}
+                <tr>
+                    <td class="text-secondary fw-semibold">#{{ genero.id }}</td>
+                    <td>
+                        <span class="badge-genre-gold fs-6 px-3 py-2">
+                            <i class="bi bi-bookmark me-1"></i>{{ genero.nome }}
+                        </span>
+                    </td>
+                    <td class="text-end">
+                        <div class="btn-action-group">
+                            <a href="{% url 'editar_genero' genero.pk %}" class="btn-action-edit" title="Editar">
+                                <i class="bi bi-pencil-square"></i> Editar
+                            </a>
+                            <a href="{% url 'excluir_genero' genero.pk %}" class="btn-action-delete" title="Excluir">
+                                <i class="bi bi-trash3"></i>
+                            </a>
+                        </div>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="3" class="p-0">
+                        <div class="empty-state">
+                            <i class="bi bi-bookmark-x empty-state-icon"></i>
+                            <h3 class="empty-state-title">Nenhum gênero cadastrado</h3>
+                            <p class="empty-state-text">Cadastre gêneros como Ação, Ficção Científica, Animação, Comédia, etc.</p>
+                            <a href="{% url 'novo_genero' %}" class="btn-primary-gold btn-primary-gold-sm">
+                                <i class="bi bi-plus-lg"></i> Cadastrar Primeiro Gênero
+                            </a>
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}
