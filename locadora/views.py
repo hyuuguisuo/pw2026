@@ -10,6 +10,7 @@ from django.contrib.messages.views import SuccessMessageMixin
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.urls import reverse_lazy
 from braces.views import GroupRequiredMixin
+from django_filters.views import FilterView
 
 from .models import Cliente, Fornecedor, Genero, Categoria, Filme, Locacao
 from .forms import (
@@ -19,6 +20,14 @@ from .forms import (
     GeneroForm,
     CategoriaForm,
     LocacaoForm,
+)
+from .filters import (
+    CategoriaFilter,
+    ClienteFilter,
+    FilmeFilter,
+    FornecedorFilter,
+    GeneroFilter,
+    LocacaoFilter,
 )
 
 
@@ -186,9 +195,12 @@ class Delete_Fornecedor(GroupRequiredMixin, DeleteView):
     group_required = ["Administrador"]
 
 
-class List_Fornecedor(GroupRequiredMixin, ListView):
+class List_Fornecedor(GroupRequiredMixin, FilterView):
     model = Fornecedor
     template_name = 'locadora/lists/fornecedor_list.html'
+    filterset_class = FornecedorFilter
+    paginate_by = 10
+    ordering = ['-id']
     extra_context = {
         "titulo": "Listar Fornecedor",
     }
@@ -246,9 +258,12 @@ class Delete_Cliente(LoginRequiredMixin, SuccessMessageMixin, DeleteView):
     success_message = "Cliente excluído com sucesso!"
 
 
-class List_Cliente(LoginRequiredMixin, ListView):
+class List_Cliente(LoginRequiredMixin, FilterView):
     model = Cliente
     template_name = 'locadora/lists/cliente_list.html'
+    filterset_class = ClienteFilter
+    paginate_by = 10
+    ordering = ['-id']
     extra_context = {
         "titulo": "Listar Clientes",
     }
@@ -305,9 +320,12 @@ class Delete_Filme(LoginRequiredMixin, DeleteView):
     }
 
 
-class List_Filme(LoginRequiredMixin, ListView):
+class List_Filme(LoginRequiredMixin, FilterView):
     model = Filme
     template_name = 'locadora/lists/filme_list.html'
+    filterset_class = FilmeFilter
+    paginate_by = 10
+    ordering = ['-id']
     extra_context = {
         "titulo": "Catálogo de Filmes",
     }
@@ -362,9 +380,12 @@ class Delete_Genero(LoginRequiredMixin, DeleteView):
     }
 
 
-class List_Genero(LoginRequiredMixin, ListView):
+class List_Genero(LoginRequiredMixin, FilterView):
     model = Genero
     template_name = 'locadora/lists/genero_list.html'
+    filterset_class = GeneroFilter
+    paginate_by = 10
+    ordering = ['-id']
     extra_context = {
         "titulo": "Listar Gêneros",
     }
@@ -419,9 +440,12 @@ class Delete_Categoria(LoginRequiredMixin, DeleteView):
     }
 
 
-class List_Categoria(LoginRequiredMixin, ListView):
+class List_Categoria(LoginRequiredMixin, FilterView):
     model = Categoria
     template_name = 'locadora/lists/categoria_list.html'
+    filterset_class = CategoriaFilter
+    paginate_by = 10
+    ordering = ['-id']
     extra_context = {
         "titulo": "Listar Categorias",
     }
@@ -492,9 +516,12 @@ class Delete_Locacao(LoginRequiredMixin, DeleteView):
     }
 
 
-class List_Locacao(LoginRequiredMixin, ListView):
+class List_Locacao(LoginRequiredMixin, FilterView):
     model = Locacao
     template_name = 'locadora/lists/locacao_list.html'
+    filterset_class = LocacaoFilter
+    paginate_by = 10
+    ordering = ['-id']
     extra_context = {
         "titulo": "Listar Locações",
     }

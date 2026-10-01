@@ -40,7 +40,7 @@ class Genero(models.Model):
     cadastrado_em = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return self.nome
+        return str(self.nome)
 
     
 class Categoria(models.Model):
@@ -53,7 +53,7 @@ class Categoria(models.Model):
     cadastrado_em = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return self.nome
+        return f"{self.nome}"
 
 class Filme(models.Model):
     CLASSIFICACAO = (
@@ -87,7 +87,12 @@ class Filme(models.Model):
     def poster_url(self):
         if self.capa:
             try:
-                return self.capa.url
+
+               # O getattr evita o falso positivo do Pylint e lê a URL do arquivo upado
+               # • self.capa.url: É gerado automaticamente pelo Django quando o usuário faz o upload de um arquivo de imagem do computador dele.
+               #• self.capa_url: Geralmente é um link de texto puro que você cola manualmente(por exemplo, um link da internet).
+
+                return getattr(self.capa, 'url', None)
             except Exception:
                 pass
         if self.capa_url:
@@ -119,7 +124,9 @@ class Locacao(models.Model):
     cadastrado_em = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return f"Locação #{self.id} - {self.filme.titulo} ({self.cliente.nome})"
+        #O self.id não funcionava, pois o framework web do Django não cria o id do objeto até que ele seja salvo
+        #Como estamos na classe, não tem objetos sendo criados e consequentemente não existem atributos de id, então a instância "id" não existe
+        return f"Locação #{self.pk} - {self.filme.titulo} ({self.cliente.nome})"
 
     def save(self):
         # User biblioteca relativedelta

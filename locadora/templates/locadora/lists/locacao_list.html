@@ -19,9 +19,11 @@
     </div>
 </div>
 
+{% include "locadora/form-filter.html" %}
+
 <div class="table-container-glass">
     <div class="table-responsive">
-        <table class="table-glass">
+        <table class="table table-striped table-hover align-middle table-datatable table-glass">
             <thead>
                 <tr>
                     <th style="width: 80px;">ID</th>
@@ -64,7 +66,7 @@
                             <a href="{% url 'editar_locacao' locacao.pk %}" class="btn-action-edit" title="Editar">
                                 <i class="bi bi-pencil-square"></i> Editar
                             </a>
-                            <a href="{% url 'excluir_locacao' locacao.pk %}" class="btn-action-delete" title="Excluir">
+                            <a href="{% url 'excluir_locacao' locacao.pk %}" class="btn-action-delete" title="Excluir" data-entity="locação" data-name="#{{ locacao.id }} - {{ locacao.filme.titulo }}">
                                 <i class="bi bi-trash3"></i>
                             </a>
                         </div>
@@ -88,4 +90,5 @@
         </table>
     </div>
 </div>
+{% include "locadora/paginacao.html" %}
 {% endblock %}

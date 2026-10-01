@@ -15,5 +15,10 @@
 
 # Python pycache:
 __pycache__/
+*.pyc
+.agents/
+.vscode/
+*.md
+
 # Ignored by the build system
 /setup.cfg
