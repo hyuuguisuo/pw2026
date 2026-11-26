@@ -3,6 +3,18 @@ import django_filters
 from .models import Categoria, Cliente, Filme, Fornecedor, Genero, Locacao
 
 
+def categorias_do_usuario(request):
+    if request is None or not request.user.is_authenticated:
+        return Categoria.objects.none()
+    return Categoria.objects.filter(cadastrado_por=request.user)
+
+
+def generos_do_usuario(request):
+    if request is None or not request.user.is_authenticated:
+        return Genero.objects.none()
+    return Genero.objects.filter(cadastrado_por=request.user)
+
+
 class ClienteFilter(django_filters.FilterSet):
     nome = django_filters.CharFilter(lookup_expr='icontains', label='Nome contém')
     email = django_filters.CharFilter(lookup_expr='icontains', label='E-mail contém')
@@ -66,11 +78,11 @@ class CategoriaFilter(django_filters.FilterSet):
 class FilmeFilter(django_filters.FilterSet):
     titulo = django_filters.CharFilter(lookup_expr='icontains', label='Título contém')
     categoria = django_filters.ModelChoiceFilter(
-        queryset=Categoria.objects.all(),
+        queryset=categorias_do_usuario,
         label='Categoria',
     )
     genero = django_filters.ModelChoiceFilter(
-        queryset=Genero.objects.all(),
+        queryset=generos_do_usuario,
         label='Gênero',
     )
     classificacao = django_filters.ChoiceFilter(choices=Filme.CLASSIFICACAO, label='Classificação')

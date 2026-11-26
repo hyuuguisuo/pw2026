@@ -9,8 +9,8 @@ class ClienteForm(forms.ModelForm):
         widgets = {
             'nome': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Nome completo do cliente'}),
             'email': forms.EmailInput(attrs={'class': 'form-control', 'placeholder': 'exemplo@dominio.com'}),
-            'cpf': forms.TextInput(attrs={'class': 'form-control', 'placeholder': '000.000.000-00'}),
-            'telefone': forms.TextInput(attrs={'class': 'form-control', 'placeholder': '(00) 00000-0000'}),
+            'cpf': forms.TextInput(attrs={'class': 'form-control', 'placeholder': '000.000.000-00', 'data-mask': '000.000.000-00'}),
+            'telefone': forms.TextInput(attrs={'class': 'form-control', 'placeholder': '(00) 00000-0000', 'data-mask': '(00) 00000-0000'}),
             'codigo': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Código interno do cliente'}),
         }
 
@@ -21,7 +21,7 @@ class FornecedorForm(forms.ModelForm):
         fields = ['nome', 'cnpj', 'contato', 'endereco', 'tipo_distribuicao']
         widgets = {
             'nome': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Razão social ou nome fantasia'}),
-            'cnpj': forms.TextInput(attrs={'class': 'form-control', 'placeholder': '00.000.000/0000-00'}),
+            'cnpj': forms.TextInput(attrs={'class': 'form-control', 'placeholder': '00.000.000/0000-00', 'data-mask': '00.000.000/0000-00'}),
             'contato': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Pessoa ou canal de contato'}),
             'endereco': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Endereço completo'}),
             'tipo_distribuicao': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Ex: Distribuição física, digital'}),
@@ -62,6 +62,15 @@ class FilmeForm(forms.ModelForm):
             'descricao': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Breve sinopse ou descrição'}),
         }
 
+    def __init__(self, *args, user=None, **kwargs):
+        super().__init__(*args, **kwargs)
+        if user is not None and user.is_authenticated:
+            self.fields['categoria'].queryset = Categoria.objects.filter(cadastrado_por=user)
+            self.fields['genero'].queryset = Genero.objects.filter(cadastrado_por=user)
+        else:
+            self.fields['categoria'].queryset = Categoria.objects.none()
+            self.fields['genero'].queryset = Genero.objects.none()
+
 
 class GeneroForm(forms.ModelForm):
     class Meta:
@@ -96,3 +105,23 @@ class LocacaoForm(forms.ModelForm):
             'data_pagamento': forms.DateTimeInput(attrs={'class': 'form-control', 'type': 'datetime-local'}),
             'metodo_pagamento': forms.Select(attrs={'class': 'form-select'}),
         }
+
+    def __init__(self, *args, user=None, **kwargs):
+        super().__init__(*args, **kwargs)
+        if user is not None and user.is_authenticated:
+            self.fields['cliente'].queryset = Cliente.objects.filter(cadastrado_por=user)
+            self.fields['filme'].queryset = Filme.objects.filter(cadastrado_por=user)
+        else:
+            self.fields['cliente'].queryset = Cliente.objects.none()
+            self.fields['filme'].queryset = Filme.objects.none()
+
+
+class UsernameRecoveryForm(forms.Form):
+    email = forms.EmailField(
+        label="E-mail cadastrado",
+        widget=forms.EmailInput(attrs={
+            "class": "form-control",
+            "placeholder": "voce@exemplo.com",
+            "autocomplete": "email",
+        }),
+    )

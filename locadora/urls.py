@@ -1,8 +1,12 @@
-from django.urls import path
+from django.urls import path, reverse_lazy
 from django.contrib.auth.views import (
     LoginView,
     LogoutView,
     PasswordChangeView,
+    PasswordResetView,
+    PasswordResetDoneView,
+    PasswordResetConfirmView,
+    PasswordResetCompleteView,
 )
 
 from .views import (
@@ -48,6 +52,7 @@ from .views import (
     Detail_Locacao,
     # API
     buscar_capa_api,
+    UsernameRecoveryView,
 )
 
 urlpatterns = [
@@ -65,6 +70,27 @@ urlpatterns = [
             "botao": "Entrar"
         }
     ), name="login"),
+    path("recuperar-usuario/", UsernameRecoveryView.as_view(), name="recuperar_usuario"),
+    path("recuperar-senha/", PasswordResetView.as_view(
+        template_name="locadora/form.html",
+        email_template_name="locadora/password_reset_email.html",
+        subject_template_name="locadora/password_reset_subject.txt",
+        success_url=reverse_lazy("senha_recuperacao_enviada"),
+        extra_context={
+            "titulo": "Recuperar Senha",
+            "botao": "Enviar instruções",
+        },
+    ), name="senha_recuperacao"),
+    path("recuperar-senha/enviado/", PasswordResetDoneView.as_view(
+        template_name="locadora/password_reset_done.html",
+    ), name="senha_recuperacao_enviada"),
+    path("recuperar-senha/<uidb64>/<token>/", PasswordResetConfirmView.as_view(
+        template_name="locadora/password_reset_confirm.html",
+        success_url=reverse_lazy("senha_recuperacao_concluida"),
+    ), name="senha_reset_confirm"),
+    path("recuperar-senha/concluido/", PasswordResetCompleteView.as_view(
+        template_name="locadora/password_reset_complete.html",
+    ), name="senha_recuperacao_concluida"),
     path("logout/", LogoutView.as_view(next_page="login"), name="logout"),
     path("alterar_senha/", PasswordChangeView.as_view(
         template_name='locadora/form.html',

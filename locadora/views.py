@@ -8,7 +8,11 @@ from django.views.generic.detail import DetailView
 from django.views.generic.list import ListView
 from django.contrib.messages.views import SuccessMessageMixin
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib import messages
+from django.contrib.auth import get_user_model
+from django.core.mail import send_mail
 from django.urls import reverse_lazy
+from django.views.generic.edit import FormView
 from braces.views import GroupRequiredMixin
 from django_filters.views import FilterView
 
@@ -20,6 +24,7 @@ from .forms import (
     GeneroForm,
     CategoriaForm,
     LocacaoForm,
+    UsernameRecoveryForm,
 )
 from .filters import (
     CategoriaFilter,
@@ -29,6 +34,43 @@ from .filters import (
     GeneroFilter,
     LocacaoFilter,
 )
+
+
+class OwnedRecordsMixin:
+    def get_queryset(self):
+        return super().get_queryset().filter(cadastrado_por=self.request.user)
+
+
+class UserScopedFormMixin:
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs["user"] = self.request.user
+        return kwargs
+
+
+class UsernameRecoveryView(FormView):
+    template_name = "locadora/recuperar_usuario.html"
+    form_class = UsernameRecoveryForm
+    success_url = reverse_lazy("recuperar_usuario")
+
+    def form_valid(self, form):
+        users = get_user_model().objects.filter(
+            email__iexact=form.cleaned_data["email"],
+            is_active=True,
+        )
+        if users.exists():
+            usernames = "\n".join(user.get_username() for user in users)
+            send_mail(
+                "Recuperação de usuário - CINEMAIF",
+                f"Os nomes de usuário associados a este e-mail são:\n\n{usernames}",
+                None,
+                [form.cleaned_data["email"]],
+            )
+        messages.success(
+            self.request,
+            "Se houver uma conta ativa associada a esse e-mail, enviaremos as instruções.",
+        )
+        return super().form_valid(form)
 
 
 def buscar_capa_api(request):
@@ -172,7 +214,7 @@ class Create_Fornecedor(GroupRequiredMixin, SuccessMessageMixin, CreateView):
         return super().form_valid(form)
 
 
-class Update_Fornecedor(GroupRequiredMixin, SuccessMessageMixin, UpdateView):
+class Update_Fornecedor(OwnedRecordsMixin, GroupRequiredMixin, SuccessMessageMixin, UpdateView):
     model = Fornecedor
     form_class = FornecedorForm
     template_name = 'locadora/form.html'
@@ -185,17 +227,18 @@ class Update_Fornecedor(GroupRequiredMixin, SuccessMessageMixin, UpdateView):
     group_required = ["Funcionário", "Administrador"]
 
 
-class Delete_Fornecedor(GroupRequiredMixin, DeleteView):
+class Delete_Fornecedor(OwnedRecordsMixin, GroupRequiredMixin, SuccessMessageMixin, DeleteView):
     model = Fornecedor
     template_name = 'locadora/confirm_delete.html'
     success_url = reverse_lazy('listar_fornecedor')
     extra_context = {
         "titulo": "Excluir Fornecedor",
     }
+    success_message = "Fornecedor excluído com sucesso!"
     group_required = ["Administrador"]
 
 
-class List_Fornecedor(GroupRequiredMixin, FilterView):
+class List_Fornecedor(OwnedRecordsMixin, GroupRequiredMixin, FilterView):
     model = Fornecedor
     template_name = 'locadora/lists/fornecedor_list.html'
     filterset_class = FornecedorFilter
@@ -210,7 +253,7 @@ class List_Fornecedor(GroupRequiredMixin, FilterView):
         return super().get_queryset().order_by('-id')
 
 
-class Detail_Fornecedor(GroupRequiredMixin, DetailView):
+class Detail_Fornecedor(OwnedRecordsMixin, GroupRequiredMixin, DetailView):
     model = Fornecedor
     template_name = 'locadora/lists/fornecedor_list.html'
     group_required = ["Funcionário", "Administrador"]
@@ -236,7 +279,7 @@ class Create_Cliente(LoginRequiredMixin, SuccessMessageMixin, CreateView):
         return super().form_valid(form)
 
 
-class Update_Cliente(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
+class Update_Cliente(OwnedRecordsMixin, LoginRequiredMixin, SuccessMessageMixin, UpdateView):
     model = Cliente
     form_class = ClienteForm
     template_name = 'locadora/form.html'
@@ -248,7 +291,7 @@ class Update_Cliente(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
     success_message = "Cliente atualizado com sucesso!"
 
 
-class Delete_Cliente(LoginRequiredMixin, SuccessMessageMixin, DeleteView):
+class Delete_Cliente(OwnedRecordsMixin, LoginRequiredMixin, SuccessMessageMixin, DeleteView):
     model = Cliente
     template_name = 'locadora/confirm_delete.html'
     success_url = reverse_lazy('listar_cliente')
@@ -258,7 +301,7 @@ class Delete_Cliente(LoginRequiredMixin, SuccessMessageMixin, DeleteView):
     success_message = "Cliente excluído com sucesso!"
 
 
-class List_Cliente(LoginRequiredMixin, FilterView):
+class List_Cliente(OwnedRecordsMixin, LoginRequiredMixin, FilterView):
     model = Cliente
     template_name = 'locadora/lists/cliente_list.html'
     filterset_class = ClienteFilter
@@ -272,7 +315,7 @@ class List_Cliente(LoginRequiredMixin, FilterView):
         return super().get_queryset().order_by('-id')
 
 
-class Detail_Cliente(LoginRequiredMixin, DetailView):
+class Detail_Cliente(OwnedRecordsMixin, LoginRequiredMixin, DetailView):
     model = Cliente
     template_name = 'locadora/lists/cliente_list.html'
 
@@ -281,7 +324,7 @@ class Detail_Cliente(LoginRequiredMixin, DetailView):
 # VIEWS FILME
 # ==============================================================================
 
-class Create_Filme(GroupRequiredMixin, SuccessMessageMixin, CreateView):
+class Create_Filme(UserScopedFormMixin, GroupRequiredMixin, SuccessMessageMixin, CreateView):
     model = Filme
     form_class = FilmeForm
     template_name = 'locadora/form.html'
@@ -298,7 +341,7 @@ class Create_Filme(GroupRequiredMixin, SuccessMessageMixin, CreateView):
         return super().form_valid(form)
 
 
-class Update_Filme(GroupRequiredMixin, SuccessMessageMixin, UpdateView):
+class Update_Filme(UserScopedFormMixin, OwnedRecordsMixin, GroupRequiredMixin, SuccessMessageMixin, UpdateView):
     model = Filme
     form_class = FilmeForm
     template_name = 'locadora/form.html'
@@ -311,16 +354,17 @@ class Update_Filme(GroupRequiredMixin, SuccessMessageMixin, UpdateView):
     group_required = ["Funcionário", "Administrador"]
 
 
-class Delete_Filme(LoginRequiredMixin, DeleteView):
+class Delete_Filme(OwnedRecordsMixin, LoginRequiredMixin, SuccessMessageMixin, DeleteView):
     model = Filme
     template_name = 'locadora/confirm_delete.html'
     success_url = reverse_lazy('listar_filme')
     extra_context = {
         "titulo": "Excluir Filme",
     }
+    success_message = "Filme excluído com sucesso!"
 
 
-class List_Filme(LoginRequiredMixin, FilterView):
+class List_Filme(OwnedRecordsMixin, LoginRequiredMixin, FilterView):
     model = Filme
     template_name = 'locadora/lists/filme_list.html'
     filterset_class = FilmeFilter
@@ -334,7 +378,7 @@ class List_Filme(LoginRequiredMixin, FilterView):
         return super().get_queryset().order_by('-id')
 
 
-class Detail_Filme(LoginRequiredMixin, DetailView):
+class Detail_Filme(OwnedRecordsMixin, LoginRequiredMixin, DetailView):
     model = Filme
     template_name = 'locadora/lists/filme_list.html'
 
@@ -359,7 +403,7 @@ class Create_Genero(LoginRequiredMixin, SuccessMessageMixin, CreateView):
         return super().form_valid(form)
 
 
-class Update_Genero(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
+class Update_Genero(OwnedRecordsMixin, LoginRequiredMixin, SuccessMessageMixin, UpdateView):
     model = Genero
     form_class = GeneroForm
     template_name = 'locadora/form.html'
@@ -371,16 +415,17 @@ class Update_Genero(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
     success_message = "Gênero atualizado com sucesso!"
 
 
-class Delete_Genero(LoginRequiredMixin, DeleteView):
+class Delete_Genero(OwnedRecordsMixin, LoginRequiredMixin, SuccessMessageMixin, DeleteView):
     model = Genero
     template_name = 'locadora/confirm_delete.html'
     success_url = reverse_lazy('listar_genero')
     extra_context = {
         "titulo": "Excluir Gênero",
     }
+    success_message = "Gênero excluído com sucesso!"
 
 
-class List_Genero(LoginRequiredMixin, FilterView):
+class List_Genero(OwnedRecordsMixin, LoginRequiredMixin, FilterView):
     model = Genero
     template_name = 'locadora/lists/genero_list.html'
     filterset_class = GeneroFilter
@@ -394,7 +439,7 @@ class List_Genero(LoginRequiredMixin, FilterView):
         return super().get_queryset().order_by('-id')
 
 
-class Detail_Genero(LoginRequiredMixin, DetailView):
+class Detail_Genero(OwnedRecordsMixin, LoginRequiredMixin, DetailView):
     model = Genero
     template_name = 'locadora/lists/genero_list.html'
 
@@ -419,7 +464,7 @@ class Create_Categoria(LoginRequiredMixin, SuccessMessageMixin, CreateView):
         return super().form_valid(form)
 
 
-class Update_Categoria(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
+class Update_Categoria(OwnedRecordsMixin, LoginRequiredMixin, SuccessMessageMixin, UpdateView):
     model = Categoria
     form_class = CategoriaForm
     template_name = 'locadora/form.html'
@@ -431,16 +476,17 @@ class Update_Categoria(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
     success_message = "Categoria atualizada com sucesso!"
 
 
-class Delete_Categoria(LoginRequiredMixin, DeleteView):
+class Delete_Categoria(OwnedRecordsMixin, LoginRequiredMixin, SuccessMessageMixin, DeleteView):
     model = Categoria
     template_name = 'locadora/confirm_delete.html'
     success_url = reverse_lazy('listar_categoria')
     extra_context = {
         "titulo": "Excluir Categoria",
     }
+    success_message = "Categoria excluída com sucesso!"
 
 
-class List_Categoria(LoginRequiredMixin, FilterView):
+class List_Categoria(OwnedRecordsMixin, LoginRequiredMixin, FilterView):
     model = Categoria
     template_name = 'locadora/lists/categoria_list.html'
     filterset_class = CategoriaFilter
@@ -454,7 +500,7 @@ class List_Categoria(LoginRequiredMixin, FilterView):
         return super().get_queryset().order_by('-id')
 
 
-class Detail_Categoria(LoginRequiredMixin, DetailView):
+class Detail_Categoria(OwnedRecordsMixin, LoginRequiredMixin, DetailView):
     model = Categoria
     template_name = 'locadora/lists/categoria_list.html'
 
@@ -463,7 +509,7 @@ class Detail_Categoria(LoginRequiredMixin, DetailView):
 # VIEWS LOCAÇÃO
 # ==============================================================================
 
-class Create_Locacao(LoginRequiredMixin, SuccessMessageMixin, CreateView):
+class Create_Locacao(UserScopedFormMixin, LoginRequiredMixin, SuccessMessageMixin, CreateView):
     model = Locacao
     form_class = LocacaoForm
     template_name = 'locadora/form.html'
@@ -495,7 +541,7 @@ class Create_Locacao(LoginRequiredMixin, SuccessMessageMixin, CreateView):
         return super().form_valid(form)
 
 
-class Update_Locacao(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
+class Update_Locacao(UserScopedFormMixin, OwnedRecordsMixin, LoginRequiredMixin, SuccessMessageMixin, UpdateView):
     model = Locacao
     form_class = LocacaoForm
     template_name = 'locadora/form.html'
@@ -507,16 +553,17 @@ class Update_Locacao(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
     success_message = "Locação atualizada com sucesso!"
 
 
-class Delete_Locacao(LoginRequiredMixin, DeleteView):
+class Delete_Locacao(OwnedRecordsMixin, LoginRequiredMixin, SuccessMessageMixin, DeleteView):
     model = Locacao
     template_name = 'locadora/confirm_delete.html'
     success_url = reverse_lazy('listar_locacao')
     extra_context = {
         "titulo": "Excluir Locação",
     }
+    success_message = "Locação excluída com sucesso!"
 
 
-class List_Locacao(LoginRequiredMixin, FilterView):
+class List_Locacao(OwnedRecordsMixin, LoginRequiredMixin, FilterView):
     model = Locacao
     template_name = 'locadora/lists/locacao_list.html'
     filterset_class = LocacaoFilter
@@ -530,6 +577,6 @@ class List_Locacao(LoginRequiredMixin, FilterView):
         return super().get_queryset().order_by('-id')
 
 
-class Detail_Locacao(LoginRequiredMixin, DetailView):
+class Detail_Locacao(OwnedRecordsMixin, LoginRequiredMixin, DetailView):
     model = Locacao
     template_name = 'locadora/lists/locacao_list.html'

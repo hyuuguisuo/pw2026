@@ -1,0 +1,23 @@
+{% extends "locadora/modelo.html" %}
+{% load crispy_forms_tags %}
+
+{% block title %}Recuperar Usuário | CINEMAIF{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center py-4">
+    <div class="col-12 col-md-8 col-lg-6">
+        <div class="form-card-glass shadow-lg">
+            <h1 class="h3 text-white mb-2">Recuperar usuário</h1>
+            <p class="text-secondary">Informe o e-mail cadastrado e enviaremos os nomes de usuário associados, se houver uma conta ativa.</p>
+            <form method="post">
+                {% csrf_token %}
+                {{ form|crispy }}
+                <div class="d-flex justify-content-between align-items-center mt-4">
+                    <a href="{% url 'login' %}" class="btn-secondary-glass">Voltar ao login</a>
+                    <button type="submit" class="btn-primary-gold">Enviar por e-mail</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

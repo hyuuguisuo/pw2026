@@ -219,9 +219,14 @@
     <script src="https://cdn.datatables.net/2.1.8/js/dataTables.min.js"></script>
     <script src="https://cdn.datatables.net/2.1.8/js/dataTables.bootstrap5.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootbox.js/5.0.1/bootbox.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.min.js"></script>
     <script src="{% static 'js/datatables-init.js' %}"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function () {
+            $('[data-mask]').each(function () {
+                $(this).mask($(this).data('mask'));
+            });
+
             const toastElements = document.querySelectorAll('.toast');
             toastElements.forEach(function (toastElement) {
                 const toast = new bootstrap.Toast(toastElement, { autohide: true, delay: 5000 });
